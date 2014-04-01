@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class NodeDomainLogic {
 
-	private final long ID; // 相关变量设置
+	private final String ID; // 相关变量设置
 	private final NodeDomainData data;
 	private final NodeDomainView view;
 	public static final String DEBUG_TAG = "领域对象调试";
@@ -18,7 +18,7 @@ public class NodeDomainLogic {
 	private boolean isAtomNode = false;
 	private boolean isExpand = false;
 
-	public NodeDomainLogic(long ID, NodeDomainView DomainView,
+	public NodeDomainLogic(String ID, NodeDomainView DomainView,
 			NodeDomainData DomainData, boolean isAtomNode) {
 		// TODO Auto-generated constructor stub
 		this.ID = ID;
@@ -39,7 +39,7 @@ public class NodeDomainLogic {
 				friendNodes.ParentID, friendNodes.ChilIDS, logicManager);
 		NodeDomainView view = new NodeDomainView(data);
 		boolean isAtom;
-		if (data.getParentID() == 0) {
+		if (data.getParentID() == "-1") {
 			isAtom = true;
 		} else {
 			isAtom = false;
@@ -47,27 +47,27 @@ public class NodeDomainLogic {
 		return new NodeDomainLogic(data.getID(), view, data, isAtom);
 	}
 
-	/**
-	 * 根据list创建相应的逻辑list
-	 * 
-	 * @param arrayList
-	 * @param logicManager
-	 * @return
-	 */
-	public static ArrayList<NodeDomainLogic> creatDomainLogicByList(
-			ArrayList<WeiboData> arrayList, LogicManager logicManager) {
-		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
-		for (int i = 0; i < arrayList.size(); i++) {
-			WeiboData weibodata = arrayList.get(i);
-			NodeDomainData data = new NodeDomainData(i, 0, null, logicManager);
-			data.onRefresh(weibodata.X * 20, weibodata.Y * 20, 5f, 0, 0);
-			data.group = weibodata.Group;
-			NodeDomainView view = new NodeDomainView(data);
-			list.add(new NodeDomainLogic(i, view, data, true));
-		}
-		return list;
-
-	}
+//	/**
+//	 * 根据list创建相应的逻辑list
+//	 * 
+//	 * @param arrayList
+//	 * @param logicManager
+//	 * @return
+//	 */
+//	public static ArrayList<NodeDomainLogic> creatDomainLogicByList(
+//			ArrayList<WeiboData> arrayList, LogicManager logicManager) {
+//		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
+//		for (int i = 0; i < arrayList.size(); i++) {
+//			WeiboData weibodata = arrayList.get(i);
+//			NodeDomainData data = new NodeDomainData(i, 0, null, logicManager);
+//			data.onRefresh(weibodata.X * 20, weibodata.Y * 20, 5f, 0, 0);
+//			data.group = weibodata.Group;
+//			NodeDomainView view = new NodeDomainView(data);
+//			list.add(new NodeDomainLogic(i, view, data, true));
+//		}
+//		return list;
+//
+//	}
 
 	/**
 	 * 根据包含weibodata的map创建一个包含所有map中logic的arraylist
@@ -80,7 +80,7 @@ public class NodeDomainLogic {
 			Map<?, WeiboData> map, LogicManager logicManager) {
 		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
 		for (WeiboData weibodata : map.values()) {
-			ArrayList<Long> childIDs = new ArrayList<Long>();
+			ArrayList<String> childIDs = new ArrayList<String>();
 			for (int i = 0; i < weibodata.childs.size(); i++) {
 				childIDs.add(weibodata.childs.get(i).ID);
 			}
@@ -131,7 +131,7 @@ public class NodeDomainLogic {
 		return view;
 	}
 
-	public long getID() {
+	public String getID() {
 		return ID;
 	}
 

@@ -3,9 +3,13 @@ package Utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+
+
+
+
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -17,10 +21,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 
 public class GexfUtils {
-	public Map<Long, WeiboData> gexfDecoder(Resources res, String Filename) {
+	public Map<String, WeiboData> gexfDecoder(Resources res, String Filename) {
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
-		Map<Long, WeiboData> map = new HashMap<Long, WeiboData>();
+		Map<String, WeiboData> map = new HashMap<String, WeiboData>();
 		try {
 			InputStream inpt_strm = res.getAssets().open(Filename);
 			document = saxReader.read(inpt_strm);
@@ -39,7 +43,7 @@ public class GexfUtils {
 		for (int i = 0; i < nodes.size(); i++) {
 			Element node = nodes.get(i);
 			// String sss = node.attribute("id").getText();
-			long id = Long.parseLong(node.attribute("id").getText());
+			String id = node.attribute("id").getText();
 			String label = node.attribute("label").getText();
 			List<Element> viz = node.content();
 			Element color = viz.get(0);

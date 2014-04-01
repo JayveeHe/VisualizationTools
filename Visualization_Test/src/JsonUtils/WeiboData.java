@@ -13,9 +13,9 @@ public class WeiboData {
 	public float size =0;
 	public WeiboData parent;
 	public ArrayList<WeiboData> childs;
-	public long ID;
+	public String ID;
 
-	public WeiboData(float x, float y, float z, String key, long id,
+	public WeiboData(float x, float y, float z, String key, String id,
 			int color, float size, String imageURI) {
 		this.X = x;
 		this.Y = y;
@@ -28,7 +28,7 @@ public class WeiboData {
 		childs = new ArrayList<WeiboData>();
 	}
 
-	public WeiboData(float x, float y, float z, int group, String key, long id) {
+	public WeiboData(float x, float y, float z, int group, String key, String id) {
 		this.X = x;
 		this.Y = y;
 		this.Z = z;

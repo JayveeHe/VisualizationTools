@@ -7,9 +7,9 @@ import surfaceview_test.LogicManager;
 import android.util.Log;
 
 public class NodeDomainData {
-	private long ID;
-	private long ParentID = -1;
-	private ArrayList<Long> ChildIDs;
+	private String ID;
+	private String ParentID = "-1";
+	private ArrayList<String> ChildIDs;
 	protected Class<?> Obj;
 	private float fCurX = 0;// XY为绘制在视图上的坐标,需要通过下面的
 	private float fCurY = 0;
@@ -36,13 +36,13 @@ public class NodeDomainData {
 	public final static int MODIFY_LEN = 10004;
 	public final static int MODIFY_ANGLE = 10005;
 
-	public NodeDomainData(long ID, ArrayList<Long> ChildIDs,
+	public NodeDomainData(String ID, ArrayList<String> ChildIDs,
 			LogicManager logicManager) {
 		this.ID = ID;
 		this.setChildIDs(ChildIDs);
 	}
 
-	public NodeDomainData(long ID, long ParentID, ArrayList<Long> ChildIDs,
+	public NodeDomainData(String ID, String ParentID, ArrayList<String> ChildIDs,
 			LogicManager logicManager) {
 		this.ID = ID;
 		this.ParentID = ParentID;
@@ -164,23 +164,23 @@ public class NodeDomainData {
 		return fViewY;
 	}
 
-	public long getID() {
+	public String getID() {
 		return ID;
 	}
 
-	public long getParentID() {
+	public String getParentID() {
 		return ParentID;
 	}
 
-	public ArrayList<Long> getChildIDs() {
+	public ArrayList<String> getChildIDs() {
 		return ChildIDs;
 	}
 
-	public void setChildIDs(ArrayList<Long> childIDs) {
+	public void setChildIDs(ArrayList<String> childIDs) {
 		ChildIDs = childIDs;
 	}
 
-	public void addChildID(long ID) {
+	public void addChildID(String ID) {
 		if (!ChildIDs.contains(ID))// 若子节点ID中还没有该ID则添加，否则不操作
 		{
 			ChildIDs.add(ID);

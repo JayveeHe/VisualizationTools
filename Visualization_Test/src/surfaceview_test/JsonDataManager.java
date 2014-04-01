@@ -31,7 +31,7 @@ public class JsonDataManager {
 				float z = (float) node.getDouble("Z");
 				int group = node.getInt("Group");
 				String key = node.getString("Key");
-				WeiboData wd = new WeiboData(x, y, z, group, key,i);
+				WeiboData wd = new WeiboData(x, y, z, group, key,String.valueOf(i));
 //				datalist.add(wd);
 				wbdtmap.put(key, wd);// 在hash表中注册该weibodata
 			}

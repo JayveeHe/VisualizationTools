@@ -17,7 +17,7 @@ public class LogicManager {
 	// 相关的变量设置
 	public final static String DEBUG_TAG = "LogicManager";
 	public DrawingMatrix[][] drawingMatrixs = null;
-	Map<Long, NodeDomainLogic> NodesMap = null;
+	Map<String, NodeDomainLogic> NodesMap = null;
 	ArrayList<NodeDomainLogic> AtomNodeLogics = null;
 	// 相关参数
 	public int iViewHeight = 0;// 视图高
@@ -53,7 +53,7 @@ public class LogicManager {
 			Log.e(DEBUG_TAG, e.toString());
 		}
 		Log.d(DEBUG_TAG, "获取的视图参数:" + this.toString());
-		NodesMap = new HashMap<Long, NodeDomainLogic>();
+		NodesMap = new HashMap<String, NodeDomainLogic>();
 		AtomNodeLogics = new ArrayList<NodeDomainLogic>();
 		drawingMatrixs = new DrawingMatrix[iViewRow][iViewCol];
 		for (int i = 0; i < iViewRow; i++)
@@ -121,7 +121,7 @@ public class LogicManager {
 	 *            待获取对象的ID
 	 * @return 待获取的逻辑
 	 */
-	public NodeDomainLogic getDomainLogic(long ID) {
+	public NodeDomainLogic getDomainLogic(String ID) {
 		return NodesMap.get(ID);
 	}
 
@@ -215,7 +215,7 @@ public class LogicManager {
 		Log.d(DEBUG_TAG, "全局更新完毕");
 	}
 
-	public Map<Long, NodeDomainLogic> getNodesMap() {
+	public Map<String, NodeDomainLogic> getNodesMap() {
 		return NodesMap;
 	}
 
@@ -248,20 +248,20 @@ public class LogicManager {
 	}
 
 	public class DrawingMatrix {
-		List<Long> NodeObjectID = new ArrayList<Long>();
+		List<String> NodeObjectID = new ArrayList<String>();
 
-		public void setLocation(long ID)// 设置进入这个区域的对象ID
+		public void setLocation(String ID)// 设置进入这个区域的对象ID
 		{
 			if (!NodeObjectID.contains(ID)) {
 				this.NodeObjectID.add(ID);
 			}
 		}
 
-		public List<Long> getLocatedIDs() {
+		public List<String> getLocatedIDs() {
 			return NodeObjectID;
 		}
 
-		public void deleteLocation(long ID)// 删除已经离开该区域的对象ID
+		public void deleteLocation(String ID)// 删除已经离开该区域的对象ID
 		{
 			for (int i = 0; i < NodeObjectID.size(); i++) {
 				if (ID == NodeObjectID.get(i)) {

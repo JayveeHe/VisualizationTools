@@ -1,7 +1,3 @@
-/ForceDirect
-/JsonUtils
-/NodeDomain
-/Utils
-/WeiboDomain
 /jayvee
-/surfaceview_test
+/.gitignore
+/Utils

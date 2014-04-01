@@ -59,7 +59,7 @@ public class NodeDomainView {
 			// Log.d("OnDraw", "有某些点超出了视图！！");
 			return;// 将要绘制的点超出了视图则不绘制
 		}
-		if (data.getParentID() != -1&&logicManager.fScaleRate>1.2f)// 即有母节点，则进行线段的绘制
+		if (data.getParentID() != "-1"&&logicManager.fScaleRate>1.2f)// 即有母节点，则进行线段的绘制
 		{
 			canvas.drawLine(data.getViewX(), data.getViewY(), logicManager
 					.getDomainLogic(data.getParentID()).getData().getViewX(),

@@ -72,10 +72,10 @@ public class MySurfaceView extends SurfaceView implements
 		// this.x = x;
 		// this.y = y;
 		System.out.println("xy=" + x + "===" + y);
-		List<Long> IDs = logicManager.transXY2CR(x, y).getLocatedIDs();
+		List<String> IDs = logicManager.transXY2CR(x, y).getLocatedIDs();
 		System.out.println("附近的ID数" + IDs.size());
 		if (IDs.size() != 0) {
-			for (long id : IDs) {
+			for (String id : IDs) {
 				System.out.println("ID=" + id);
 				NodeDomainLogic domainLogic = logicManager.NodesMap.get(id);
 				float tempX = domainLogic.getData().getCurX();

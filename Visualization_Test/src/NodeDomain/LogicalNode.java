@@ -6,16 +6,16 @@ import android.util.Log;
 
 public abstract class LogicalNode {
 
-	long ID = 0;// 该节点的ID
-	ArrayList<Long> ChilIDS = null;// 该节点的子节点ID
-	long ParentID = 0;// 该节点的母节点ID
+	String ID = "";// 该节点的ID
+	ArrayList<String> ChilIDS = null;// 该节点的子节点ID
+	String ParentID = "-1";// 该节点的母节点ID
 	public final static String DEBUG_TAG = "LogicalNode";
 
-	public void addChild(long ID) {
+	public void addChild(String ID) {
 		this.ChilIDS.add(ID);
 	}
 
-	public void removeChild(long ID) {
+	public void removeChild(String ID) {
 		for (int i = 0; i < this.ChilIDS.size(); i++) {
 			if (this.ChilIDS.get(i) == ID) {
 				this.ChilIDS.remove(i);
@@ -26,15 +26,15 @@ public abstract class LogicalNode {
 		Log.e(DEBUG_TAG, "移除孩子节点ID失败!检查ID是否正确!");
 	}
 
-	public ArrayList<Long> getChildIDs() {
+	public ArrayList<String> getChildIDs() {
 		return this.ChilIDS;
 	}
 
-	public long getID() {
+	public String getID() {
 		return this.ID;
 	}
 
-	public long getParentID() {
+	public String getParentID() {
 		return this.ParentID;
 	}
 

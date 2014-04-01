@@ -9,7 +9,7 @@ import NodeDomain.NodeDomainData;
 public class WeiboDomainData extends NodeDomainData {
 	private WeiboData weiboData;
 
-	public WeiboDomainData(long ID, long ParentID, ArrayList<Long> ChildIDs,
+	public WeiboDomainData(String ID, String ParentID, ArrayList<String> ChildIDs,
 			LogicManager logicManager) {
 		super(ID, ParentID, ChildIDs, logicManager);
 		// TODO Auto-generated constructor stub
