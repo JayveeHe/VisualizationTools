@@ -7,8 +7,6 @@ import java.util.Map;
 
 import ForceDirect.ForceDirectMethod;
 import NodeDomain.FriendNodes;
-import NodeDomain.ADomainData;
-import NodeDomain.ADomainLogic;
 import NodeDomain.NodeDomainData;
 import NodeDomain.NodeDomainLogic;
 import android.util.Log;

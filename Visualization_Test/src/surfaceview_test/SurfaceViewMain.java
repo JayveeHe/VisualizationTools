@@ -4,19 +4,13 @@ import java.util.ArrayList;
 
 import JsonUtils.JsonUtils;
 import JsonUtils.WeiboData;
-import NodeDomain.ADomainData;
-import NodeDomain.ADomainLogic;
-import NodeDomain.ADomainView;
 import NodeDomain.NodeDomainLogic;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnDragListener;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 
 public class SurfaceViewMain extends Activity {
@@ -40,42 +34,6 @@ public class SurfaceViewMain extends Activity {
 		final MySurfaceView myView = new MySurfaceView(this,filename);
 		setContentView(myView);
 		
-		// test
-
-		// myView.setOnTouchListener(new MyOnTouchListener());
-		// myView.screenDrawLogic.addDomainLogic(nodeDomainLogic);
-
-		// OnTouchListener mytouch = new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// // TODO Auto-generated method stub
-		// System.out.println("触控点数" + event.getPointerCount());
-		// // event.getp
-		// switch (event.getAction()) {
-		// case MotionEvent.ACTION_DOWN:
-		// downX = event.getX();
-		// downY = event.getY();
-		// System.out.println("测试长按" + "按下！" + downX + "=" + downY);
-		// myView.onTouchSetXY(downX, downY);
-		// break;
-		// case MotionEvent.ACTION_MOVE:
-		// // System.out.println("测试长按" + "移动！");
-		// break;
-		// case MotionEvent.ACTION_UP:
-		// float xx = event.getX() - downX;
-		// float yy = event.getY() - downY;
-		// myView.onDrag(xx, yy);
-		// System.out.println("测试长按" + "起来！");
-		// break;
-		// default:
-		// break;
-		// }
-		//
-		// return true;
-		// }
-		// };
-
 		OnTouchListener Mytouch = new OnTouchListener() {
 
 			@Override
@@ -112,7 +70,7 @@ public class SurfaceViewMain extends Activity {
 								* distance(event) / distance;
 						// myView.onScale(scaleRate);
 //						myView.logicManager.onOverallUpdate();
-						myView.on
+						myView.logicManager.onViewRefresh();
 						distance = distance(event);
 					}
 					break;

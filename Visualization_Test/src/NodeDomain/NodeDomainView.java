@@ -12,35 +12,36 @@ public class NodeDomainView {
 	NodeDomainData data;
 	Paint p = new Paint();
 	Paint textpaint = new Paint(Color.BLACK);
+
 	public NodeDomainView(NodeDomainData data) {
 		textpaint.setTextSize(14);
 		this.data = data;
 		p.setColor(data.color);
-//		switch (data.group % 7) {
-//		case 0:
-//			p.setColor(Color.GRAY);
-//			break;
-//		case 1:
-//			p.setColor(Color.GREEN);
-//			break;
-//		case 2:
-//			p.setColor(Color.BLUE);
-//			break;
-//		case 3:
-//			p.setColor(Color.CYAN);
-//			break;
-//		case 4:
-//			p.setColor(Color.RED);
-//			break;
-//		case 5:
-//			p.setColor(Color.YELLOW);
-//			break;
-//		case 6:
-//			p.setColor(Color.DKGRAY);
-//			break;
-//		default:
-//			p.setColor(Color.LTGRAY);
-//		}
+		// switch (data.group % 7) {
+		// case 0:
+		// p.setColor(Color.GRAY);
+		// break;
+		// case 1:
+		// p.setColor(Color.GREEN);
+		// break;
+		// case 2:
+		// p.setColor(Color.BLUE);
+		// break;
+		// case 3:
+		// p.setColor(Color.CYAN);
+		// break;
+		// case 4:
+		// p.setColor(Color.RED);
+		// break;
+		// case 5:
+		// p.setColor(Color.YELLOW);
+		// break;
+		// case 6:
+		// p.setColor(Color.DKGRAY);
+		// break;
+		// default:
+		// p.setColor(Color.LTGRAY);
+		// }
 	}
 
 	/**
@@ -54,12 +55,12 @@ public class NodeDomainView {
 	public void OnDraw(Canvas canvas, LogicManager logicManager, Object MsgObj) {
 		// TODO Auto-generated method stub
 
-		if (Math.abs((data.getViewX())) > logicManager.iViewWidth
-				|| Math.abs((data.getViewY())) > logicManager.iViewHeight) {
-			// Log.d("OnDraw", "有某些点超出了视图！！");
-			return;// 将要绘制的点超出了视图则不绘制
-		}
-		if (data.getParentID() != "-1"&&logicManager.fScaleRate>1.2f)// 即有母节点，则进行线段的绘制
+		// if (Math.abs((data.getViewX())) > logicManager.iViewWidth
+		// || Math.abs((data.getViewY())) > logicManager.iViewHeight) {
+		// // Log.d("OnDraw", "有某些点超出了视图！！");
+		// return;// 将要绘制的点超出了视图则不绘制
+		// }
+		if (data.getParentID() != "-1" && logicManager.fScaleRate > 1.2f)// 即有母节点，且缩放达到某个阈值，则进行线段的绘制
 		{
 			canvas.drawLine(data.getViewX(), data.getViewY(), logicManager
 					.getDomainLogic(data.getParentID()).getData().getViewX(),
@@ -68,7 +69,8 @@ public class NodeDomainView {
 		}
 		canvas.drawCircle(data.getViewX(), data.getViewY(), data.getRadius()
 				* logicManager.fScaleRate, p);
-		if (logicManager.fScaleRate > 3.5) {
+		if (logicManager.fScaleRate > 3.5)// 缩放达到某个阈值进行名字显示
+		{
 			canvas.drawText(data.key, data.getViewX(), data.getViewY(),
 					textpaint);
 		}
