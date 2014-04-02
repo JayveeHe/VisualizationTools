@@ -24,10 +24,10 @@ import android.widget.Toast;
 public class MySurfaceView extends SurfaceView implements
 		SurfaceHolder.Callback {
 	final static String DEBUG_TAG = "MySurfaceView";
-	
+
 	String filename = "";
 	String clickname = "";
-	
+
 	// 相关参数
 	int iViewHeight = 0;// 视图高
 	int iViewWidth = 0;// 视图宽
@@ -42,7 +42,7 @@ public class MySurfaceView extends SurfaceView implements
 	// Paint pp = new Paint();
 	LogicManager logicManager;
 
-	public MySurfaceView(Context context,String filename) {
+	public MySurfaceView(Context context, String filename) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		this.filename = filename;
@@ -53,15 +53,12 @@ public class MySurfaceView extends SurfaceView implements
 		setFocusable(true);
 	}
 
-	//
-	// public void onScale(float ScaleRate) {
-	// logicManager.onOverallUpdate();
-	// }
 
 	public void onDrag(float Xoffset, float Yoffset) {
 		logicManager.fXOffset += Xoffset;
 		logicManager.fYOffset += Yoffset;
-		logicManager.onOverallUpdate();
+//		logicManager.onOverallUpdate();
+		logicManager.onViewRefresh();
 	}
 
 	public void onChangeComplete() {
@@ -69,8 +66,6 @@ public class MySurfaceView extends SurfaceView implements
 	}
 
 	public void onTouchSetXY(float x, float y) {
-		// this.x = x;
-		// this.y = y;
 		System.out.println("xy=" + x + "===" + y);
 		List<String> IDs = logicManager.transXY2CR(x, y).getLocatedIDs();
 		System.out.println("附近的ID数" + IDs.size());
@@ -89,28 +84,11 @@ public class MySurfaceView extends SurfaceView implements
 				if (kk <= ((logicManager.fGridWidth + logicManager.fGridHeight))) {
 					Log.d(DEBUG_TAG, "点到了某个点");
 					clickname = logicManager.getDomainLogic(id).getData().key;
-//					 Toast.makeText(getContext(), "你点到了："
-//					 + logicManager.getDomainLogic(id).getData().key,
-//					 Toast.LENGTH_SHORT);
-					// FDA添加点
-					// FriendNodes nodes = new FriendNodes(r.nextLong(),
-					// domainLogic.getID());
-					// domainLogic.getData().addChildID(nodes.getID());
-					// logicManager.addChildDomainLogic(domainLogic,
-					// NodeDomainLogic.creatDomainLogicByFriendNode(nodes,
-					// logicManager));
-
-					// 测试用
-					// logicManager.onUpdate(domainLogic);
-					// logicManager.FDA();
-					// logicManager.onOverallUpdate();
 					return;
 				}
 
 			}
 		}
-		// logicManager.FDA();
-		// logicManager.onOverallUpdate();
 	}
 
 	@Override
@@ -129,30 +107,13 @@ public class MySurfaceView extends SurfaceView implements
 			Log.d(DEBUG_TAG, "获取的视图高宽=" + iViewHeight + "x" + iViewWidth);
 		}
 		holder.unlockCanvasAndPost(canvas);
-		// screenDrawLogic = new ScreenDrawLogic(iViewHeight, iViewWidth,
-		// iViewRow, iViewCol);
 		logicManager = new LogicManager(iViewHeight, iViewWidth, iViewRow,
 				iViewCol);
-		// 测试用添加结点
-		// FriendNodes friendNodes = new FriendNodes(123l, 0);
-		// NodeDomainLogic nodeDomainLogic = NodeDomainLogic
-		// .creatDomainLogicByFriendNode(friendNodes, logicManager);
-		// nodeDomainLogic.getData().onRefresh(iViewWidth / 2, iViewHeight / 2,
-		// 10, 80, 0);
-		// nodeDomainLogic.getData().onCalculateViewXY(logicManager);
-		// logicManager.addDomainLogic(nodeDomainLogic);
 		GexfUtils gexfUtils = new GexfUtils();
-
-//		JsonDataManager jsonDataManager = new JsonDataManager();
-//		String jstr = JsonUtils.readFileFromAssets(getResources(),
-//				"李开复-2.txt");
-		// ArrayList<NodeDomainLogic> logiclist = NodeDomainLogic
-		// .creatDomainLogicByMap(
-		// jsonDataManager.ReadWeiboNodesFromStr(jstr),
-		// logicManager);
 		ArrayList<NodeDomainLogic> logiclist = NodeDomainLogic
-				.creatDomainLogicByMap(gexfUtils.gexfDecoder(getResources(),
-						filename+".gexf"), logicManager);
+				.creatDomainLogicByMap(
+						gexfUtils.gexfDecoder(getResources(), filename
+								+ ".gexf"), logicManager);
 		for (int i = 0; i < logiclist.size(); i++) {
 			logicManager.addDomainLogic(logiclist.get(i));
 		}
@@ -191,8 +152,8 @@ public class MySurfaceView extends SurfaceView implements
 			Paint p = new Paint(); // 创建画笔
 			p.setColor(Color.BLUE);
 			p.setTextSize(20);
-			logicManager.fXOffset = logicManager.iViewWidth/2;
-			logicManager.fYOffset = logicManager.iViewHeight/2;
+			logicManager.fXOffset = logicManager.iViewWidth / 2;
+			logicManager.fYOffset = logicManager.iViewHeight / 2;
 			logicManager.onOverallUpdate();
 			while (isRun) {
 				Canvas canvas = null;
@@ -204,7 +165,7 @@ public class MySurfaceView extends SurfaceView implements
 						// c.drawRect(r, p);
 						// c.drawText("这是第" + (count++) + "秒", 100, 310, p);
 						// logicManager.FDA();
-//						logicManager.onOverallUpdate();
+						// logicManager.onOverallUpdate();
 						if (logicManager != null)
 							for (NodeDomainLogic logic : logicManager
 									.getNodesMap().values()) {
@@ -225,9 +186,8 @@ public class MySurfaceView extends SurfaceView implements
 							}
 						canvas.drawText("共绘制" + logicManager.NodesMap.size()
 								+ "个点", 0, 50, p);
-						canvas.drawText("点到了" + clickname
-								 , 0, 20, p);
-						
+						canvas.drawText("点到了" + clickname, 0, 20, p);
+
 						// screenDrawLogic.getDomainLogic(123).getView().OnDraw(c,
 						// null);
 						// c.drawCircle(x, y, 30, pp);

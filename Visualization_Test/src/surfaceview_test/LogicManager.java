@@ -194,7 +194,7 @@ public class LogicManager {
 	}
 
 	/**
-	 * 全局更新函数，从元节点开始遍历更新信息，确保全图节点信息都更新到。 一般在进行位移、缩放操作后进行。
+	 * 全局更新函数，从元节点开始遍历更新信息，确保全图节点信息都更新到。 一般在进行位移、缩放操作结束时进行。
 	 * 
 	 * @param AtomLogicSet
 	 *            元节点逻辑对象的集合
@@ -213,6 +213,16 @@ public class LogicManager {
 
 		}
 		Log.d(DEBUG_TAG, "全局更新完毕");
+	}
+	
+	/**
+	 * 用于进行轻量级的图像刷新，一般在拖动、缩放时进行，用于更新绘图坐标。
+	 */
+	public void onViewRefresh(){
+		for (NodeDomainLogic logic : NodesMap.values()) {
+			NodeDomainData data = logic.getData();
+			data.onCalculateViewXY(this);
+		}
 	}
 
 	public Map<String, NodeDomainLogic> getNodesMap() {

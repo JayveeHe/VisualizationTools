@@ -111,7 +111,8 @@ public class SurfaceViewMain extends Activity {
 						myView.logicManager.fScaleRate = myView.logicManager.fScaleRate
 								* distance(event) / distance;
 						// myView.onScale(scaleRate);
-						myView.logicManager.onOverallUpdate();
+//						myView.logicManager.onOverallUpdate();
+						myView.on
 						distance = distance(event);
 					}
 					break;
@@ -125,7 +126,7 @@ public class SurfaceViewMain extends Activity {
 							* (FirstdownY - event.getY())) < 20) {
 						myView.onTouchSetXY(downX, downY);
 					}
-					myView.logicManager.onOverallUpdate();
+					myView.onChangeComplete();
 					break;
 				case MotionEvent.ACTION_POINTER_UP:
 					// distance(event);

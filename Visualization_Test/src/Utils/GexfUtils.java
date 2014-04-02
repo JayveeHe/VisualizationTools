@@ -6,11 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
-
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -19,9 +14,12 @@ import org.dom4j.io.SAXReader;
 import JsonUtils.WeiboData;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.Log;
 
 public class GexfUtils {
+	private final String DEBUG_TAG="Gexf工具";
 	public Map<String, WeiboData> gexfDecoder(Resources res, String Filename) {
+		
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
 		Map<String, WeiboData> map = new HashMap<String, WeiboData>();
@@ -44,30 +42,42 @@ public class GexfUtils {
 			Element node = nodes.get(i);
 			// String sss = node.attribute("id").getText();
 			String id = node.attribute("id").getText();
-			String label = node.attribute("label").getText();
-			List<Element> viz = node.content();
-			Element color = viz.get(0);
+			String label="";
+			try {
+				label = node.attribute("label").getText();
+			} catch (Exception e) {
+				Log.e(DEBUG_TAG, "读取label错误");
+			}
+			// List<Element> viz = node.content();
+			Element color = node.element("color");
+			// Element color = viz.get(0);
 			int color_b = Integer.parseInt(color.attribute("b").getText());
 			int color_g = Integer.parseInt(color.attribute("g").getText());
 			int color_r = Integer.parseInt(color.attribute("r").getText());
 			int color_int = Color.argb(255, color_r, color_g, color_b);
-			Element position = viz.get(1);
+			Element position = node.element("position");
 			float x = Float.parseFloat(position.attribute("x").getText());
 			float y = Float.parseFloat(position.attribute("y").getText());
-			float z = Float.parseFloat(position.attribute("z").getText());
-			Element size = viz.get(2);
+			Element size = node.element("size");
 			float value = Float.parseFloat(size.attribute("value").getText());
-			Element image = viz.get(3);
-			String imageURI = image.attribute("uri").getText();
+			String imageURI = "null";
+			try {
+				Element other = node.element("node-shape");
+				imageURI = other.attribute("uri").getText();
+			} catch (Exception e) {
+//				e.printStackTrace();
+				Log.e(DEBUG_TAG, "读取附加对象错误");
+			}
 			System.out.println(label);
-			WeiboData weibodata = new WeiboData(x, y, z, label, id, color_int,
+			WeiboData weibodata = new WeiboData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
 		}
+		// 读取边信息（即节点关系）
 		for (int i = 0; i < edges.size(); i++) {
 			Element edge = edges.get(i);
-			long source_id = Long.parseLong(edge.attribute("source").getText());
-			long target_id = Long.parseLong(edge.attribute("target").getText());
+			String source_id = edge.attribute("source").getText();
+			String target_id = edge.attribute("target").getText();
 			WeiboData source = map.get(source_id);
 			WeiboData target = map.get(target_id);
 			if (source.parent == null)// 即还没有找到母节点
