@@ -1,10 +1,18 @@
 package surfaceview_test;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import JsonUtils.JsonUtils;
 import JsonUtils.WeiboData;
 import NodeDomain.NodeDomainLogic;
+import Utils.FileUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,11 +37,23 @@ public class SurfaceViewMain extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		Bundle bundle=getIntent().getExtras();
-		String filename=bundle.getString("filename");
-		final MySurfaceView myView = new MySurfaceView(this,filename);
+		Bundle bundle = getIntent().getExtras();
+		String filename = bundle.getString("filename");
+		String filepath = bundle.getString("filepath");
+		// final MySurfaceView myView = new MySurfaceView(this,filename);
+		File gexffile = new File(filepath);
+		final MySurfaceView myView = new MySurfaceView(this, gexffile);
+		// System.out.println("size="+gexffile.length());
+		// InputStream ipstrm = null;
+		// try {
+		// ipstrm = new FileInputStream(gexffile);
+		// } catch (FileNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// final MySurfaceView myView = new MySurfaceView(this, ipstrm);
 		setContentView(myView);
-		
+
 		OnTouchListener Mytouch = new OnTouchListener() {
 
 			@Override
@@ -63,13 +83,13 @@ public class SurfaceViewMain extends Activity {
 						downX = event.getX();
 						downY = event.getY();
 						myView.onDrag(xx, yy);
-//						myView.logicManager.onOverallUpdate();
+						// myView.logicManager.onOverallUpdate();
 					} else if (TouchMod == TOUCH_MOD_ZOOM) {
 						// System.out.println("两指距离=" + distance(event));
 						myView.logicManager.fScaleRate = myView.logicManager.fScaleRate
 								* distance(event) / distance;
 						// myView.onScale(scaleRate);
-//						myView.logicManager.onOverallUpdate();
+						// myView.logicManager.onOverallUpdate();
 						myView.logicManager.onViewRefresh();
 						distance = distance(event);
 					}

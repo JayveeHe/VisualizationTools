@@ -1,10 +1,14 @@
 package surfaceview_test;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import JsonUtils.JsonUtils;
+import JsonUtils.WeiboData;
 import NodeDomain.FriendNodes;
 import NodeDomain.NodeDomainData;
 import NodeDomain.NodeDomainLogic;
@@ -27,6 +31,9 @@ public class MySurfaceView extends SurfaceView implements
 
 	String filename = "";
 	String clickname = "";
+	File gexffile = null;
+	InputStream ipstrm=null;
+	
 
 	// 相关参数
 	int iViewHeight = 0;// 视图高
@@ -52,12 +59,34 @@ public class MySurfaceView extends SurfaceView implements
 		// pp.setColor(Color.RED);
 		setFocusable(true);
 	}
-
+	
+	public MySurfaceView(Context context,File gexffile)
+	{
+		super(context);
+		// TODO Auto-generated constructor stub
+		this.gexffile = gexffile;
+		holder = this.getHolder();
+		holder.addCallback(this);
+		myThread = new MyThread(holder);
+		// pp.setColor(Color.RED);
+		setFocusable(true);
+	}
+	public MySurfaceView(Context context,InputStream ipstrm)
+	{
+		super(context);
+		// TODO Auto-generated constructor stub
+		this.ipstrm = ipstrm;
+		holder = this.getHolder();
+		holder.addCallback(this);
+		myThread = new MyThread(holder);
+		// pp.setColor(Color.RED);
+		setFocusable(true);
+	}
 
 	public void onDrag(float Xoffset, float Yoffset) {
 		logicManager.fXOffset += Xoffset;
 		logicManager.fYOffset += Yoffset;
-//		logicManager.onOverallUpdate();
+		// logicManager.onOverallUpdate();
 		logicManager.onViewRefresh();
 	}
 
@@ -109,11 +138,12 @@ public class MySurfaceView extends SurfaceView implements
 		holder.unlockCanvasAndPost(canvas);
 		logicManager = new LogicManager(iViewHeight, iViewWidth, iViewRow,
 				iViewCol);
-		GexfUtils gexfUtils = new GexfUtils();
+//		Map<String, WeiboData> map = GexfUtils.gexfDecoder(getResources(),
+//				filename + ".gexf");
+		Map<String, WeiboData> map = GexfUtils.gexfDecoder(gexffile);
+//		Map<String, WeiboData> map = GexfUtils.gexfDecoder(ipstrm);
 		ArrayList<NodeDomainLogic> logiclist = NodeDomainLogic
-				.creatDomainLogicByMap(
-						gexfUtils.gexfDecoder(getResources(), filename
-								+ ".gexf"), logicManager);
+				.creatDomainLogicByMap(map, logicManager);
 		for (int i = 0; i < logiclist.size(); i++) {
 			logicManager.addDomainLogic(logiclist.get(i));
 		}
