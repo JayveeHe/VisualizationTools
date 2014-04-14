@@ -214,7 +214,7 @@ public class MySurfaceView extends SurfaceView implements
 								logic.getView().OnDraw(canvas, logicManager,
 										null);
 							}
-						canvas.drawText("共绘制" + logicManager.NodesMap.size()
+						canvas.drawText("文件名："+gexffile.getName()+"\n共绘制" + logicManager.NodesMap.size()
 								+ "个点", 0, 50, p);
 						canvas.drawText("点到了" + clickname, 0, 20, p);
 

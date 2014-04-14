@@ -17,6 +17,9 @@ public class LogicManager {
 	public DrawingMatrix[][] drawingMatrixs = null;
 	Map<String, NodeDomainLogic> NodesMap = null;
 	ArrayList<NodeDomainLogic> AtomNodeLogics = null;
+	private boolean isChanging = false;//用于监测是否处于拖动、缩放状态
+	
+	
 	// 相关参数
 	public int iViewHeight = 0;// 视图高
 	public int iViewWidth = 0;// 视图宽
@@ -66,7 +69,7 @@ public class LogicManager {
 	}
 
 	// //////////////////////////////////////////////////////
-	// /FDA算法
+	// /FDA(力导向)算法
 	public void FDA() {
 		ForceDirectMethod FDAmethod = new ForceDirectMethod(this);
 		for (NodeDomainLogic logic_i : NodesMap.values()) {
@@ -198,6 +201,7 @@ public class LogicManager {
 	 *            元节点逻辑对象的集合
 	 */
 	public void onOverallUpdate() {
+		setChanging(false);
 		for (NodeDomainLogic logic : NodesMap.values()) {
 			NodeDomainData data = logic.getData();
 			data.onModify(NodeDomainData.MODIFY_X, data.getCurX()
@@ -217,6 +221,7 @@ public class LogicManager {
 	 * 用于进行轻量级的图像刷新，一般在拖动、缩放时进行，用于更新绘图坐标。
 	 */
 	public void onViewRefresh(){
+		setChanging(true);
 		for (NodeDomainLogic logic : NodesMap.values()) {
 			NodeDomainData data = logic.getData();
 			data.onCalculateViewXY(this);
@@ -277,7 +282,7 @@ public class LogicManager {
 					return;// 及时退出（因为没有寻找的必要了）
 				}
 			}
-			Log.e(DEBUG_TAG, "移除对象ID时未发现该ID!");
+//			Log.e(DEBUG_TAG, "移除对象ID时未发现该ID!");
 		}
 	}
 
@@ -287,5 +292,13 @@ public class LogicManager {
 		return "视图高度:" + iViewHeight + "\t视图宽度:" + iViewWidth + "\n视图逻辑行数:"
 				+ iViewRow + "\t视图逻辑列数" + iViewCol + "\n视图每格高度:" + fGridHeight
 				+ "\t视图每格宽度:" + fGridWidth;
+	}
+
+	public boolean isChanging() {
+		return isChanging;
+	}
+
+	public void setChanging(boolean isChanging) {
+		this.isChanging = isChanging;
 	}
 }

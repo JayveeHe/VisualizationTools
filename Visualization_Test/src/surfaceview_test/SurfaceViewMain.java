@@ -43,15 +43,6 @@ public class SurfaceViewMain extends Activity {
 		// final MySurfaceView myView = new MySurfaceView(this,filename);
 		File gexffile = new File(filepath);
 		final MySurfaceView myView = new MySurfaceView(this, gexffile);
-		// System.out.println("size="+gexffile.length());
-		// InputStream ipstrm = null;
-		// try {
-		// ipstrm = new FileInputStream(gexffile);
-		// } catch (FileNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// final MySurfaceView myView = new MySurfaceView(this, ipstrm);
 		setContentView(myView);
 
 		OnTouchListener Mytouch = new OnTouchListener() {
@@ -62,7 +53,7 @@ public class SurfaceViewMain extends Activity {
 				switch (event.getAction() & MotionEvent.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
 					System.out.println("单指按下");
-					System.out.println(event.getX(0));
+//					System.out.println(event.getX(0));
 					downX = event.getX();
 					downY = event.getY();
 					FirstdownX = event.getX();
@@ -72,7 +63,7 @@ public class SurfaceViewMain extends Activity {
 					break;
 				case MotionEvent.ACTION_POINTER_DOWN:
 					System.out.println("多指按下");
-					System.out.println(event.getX(0) + "++++" + event.getX(1));
+//					System.out.println(event.getX(0) + "++++" + event.getX(1));
 					distance = distance(event);
 					TouchMod = TOUCH_MOD_ZOOM;
 					break;
@@ -121,8 +112,8 @@ public class SurfaceViewMain extends Activity {
 			private float distance(MotionEvent event) {
 				float x = event.getX(0) - event.getX(1);
 				float y = event.getY(0) - event.getY(1);
-				float ssss = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-				return ssss;
+				float dist = (float) Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+				return dist;
 			}
 		};
 

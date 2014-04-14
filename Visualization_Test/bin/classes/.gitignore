@@ -1,6 +1,9 @@
 /jayvee
 /.gitignore
-/UI
 /ui
-/Utils
 /surfaceview_test
+/Utils
+/NodeDomain
+/ForceDirect
+/WeiboDomain
+/surfaceview

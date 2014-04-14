@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bkg" >
+
+    <Button
+        android:id="@+id/btn_weblist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_locallist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="52dp"
+        
+        android:text="获取网络文件列表" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_weblist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="58dp"
+        android:text="数据挖掘可视化"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/btn_test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_locallist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="Button" />
+
+    <Button
+        android:id="@+id/btn_locallist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_weblist"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="178dp"
+        android:text="查看本地文件列表" />
+
+</RelativeLayout>

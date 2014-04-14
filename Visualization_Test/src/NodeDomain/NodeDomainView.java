@@ -14,7 +14,7 @@ public class NodeDomainView {
 	Paint textpaint = new Paint(Color.BLACK);
 
 	public NodeDomainView(NodeDomainData data) {
-		textpaint.setTextSize(14);
+		textpaint.setTextSize(18);
 		this.data = data;
 		p.setColor(data.color);
 		// switch (data.group % 7) {
@@ -60,15 +60,24 @@ public class NodeDomainView {
 		// // Log.d("OnDraw", "有某些点超出了视图！！");
 		// return;// 将要绘制的点超出了视图则不绘制
 		// }
-		if (data.getParentID() != "-1" && logicManager.fScaleRate > 1.2f)// 即有母节点，且缩放达到某个阈值，则进行线段的绘制
-		{
-			canvas.drawLine(data.getViewX(), data.getViewY(), logicManager
-					.getDomainLogic(data.getParentID()).getData().getViewX(),
-					logicManager.getDomainLogic(data.getParentID()).getData()
-							.getViewY(), new Paint(Color.BLUE));
+
+		// 线段的绘制，只有在移动、缩放结束后才进行绘制
+		if (!logicManager.isChanging()) {
+			if (data.getParentID() != "-1" && logicManager.fScaleRate > 1.2f)// 即有母节点，且缩放达到某个阈值，则进行线段的绘制
+			{
+				canvas.drawLine(data.getViewX(), data.getViewY(), logicManager
+						.getDomainLogic(data.getParentID()).getData()
+						.getViewX(),
+						logicManager.getDomainLogic(data.getParentID())
+								.getData().getViewY(), p);
+			}
 		}
+
+		// 节点的绘制
 		canvas.drawCircle(data.getViewX(), data.getViewY(), data.getRadius()
 				* logicManager.fScaleRate, p);
+
+		// 节点名字的绘制
 		if (logicManager.fScaleRate > 3.5)// 缩放达到某个阈值进行名字显示
 		{
 			canvas.drawText(data.key, data.getViewX(), data.getViewY(),
