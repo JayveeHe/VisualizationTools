@@ -1,25 +1,23 @@
 package surfaceview_test;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
 
-import JsonUtils.JsonUtils;
-import JsonUtils.WeiboData;
-import NodeDomain.NodeDomainLogic;
-import Utils.FileUtils;
+import jayvee.visualization_test.R;
+//import jayvee.visualization_test.R
 import android.app.Activity;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
+import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class SurfaceViewMain extends Activity {
 
@@ -32,7 +30,9 @@ public class SurfaceViewMain extends Activity {
 	int TouchMod = 0;
 	final static int TOUCH_MOD_DRAG = 1;
 	final static int TOUCH_MOD_ZOOM = 2;
-
+	MySurfaceView myView;
+	Builder builder;
+	public static String scrsFileRootPath;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -42,8 +42,16 @@ public class SurfaceViewMain extends Activity {
 		String filepath = bundle.getString("filepath");
 		// final MySurfaceView myView = new MySurfaceView(this,filename);
 		File gexffile = new File(filepath);
-		final MySurfaceView myView = new MySurfaceView(this, gexffile);
+		scrsFileRootPath = Environment.getExternalStorageDirectory()
+				+ "/数据可视化截图/";
+		File file = new File(scrsFileRootPath);
+		if (!file.exists())
+			file.mkdir();
+		builder = new Builder(this);
+		myView = new MySurfaceView(this, gexffile);
 		setContentView(myView);
+
+		// Button btn_save =
 
 		OnTouchListener Mytouch = new OnTouchListener() {
 
@@ -53,7 +61,7 @@ public class SurfaceViewMain extends Activity {
 				switch (event.getAction() & MotionEvent.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
 					System.out.println("单指按下");
-//					System.out.println(event.getX(0));
+					// System.out.println(event.getX(0));
 					downX = event.getX();
 					downY = event.getY();
 					FirstdownX = event.getX();
@@ -63,7 +71,8 @@ public class SurfaceViewMain extends Activity {
 					break;
 				case MotionEvent.ACTION_POINTER_DOWN:
 					System.out.println("多指按下");
-//					System.out.println(event.getX(0) + "++++" + event.getX(1));
+					// System.out.println(event.getX(0) + "++++" +
+					// event.getX(1));
 					distance = distance(event);
 					TouchMod = TOUCH_MOD_ZOOM;
 					break;
@@ -130,6 +139,78 @@ public class SurfaceViewMain extends Activity {
 		// return false;
 		// }
 		// });
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.my_menu, menu);
+		menu.getItem(0).setOnMenuItemClickListener(
+				new OnMenuItemClickListener() {
+
+					@Override
+					public boolean onMenuItemClick(MenuItem arg0) {
+						// TODO Auto-generated method stub
+
+						final EditText edittext = new EditText(
+								SurfaceViewMain.this);
+						builder.setView(edittext);
+						builder.setTitle("请输入保存截图的文件名");
+						builder.setCancelable(false);
+						builder.setNegativeButton("取消", null);
+						builder.setPositiveButton("确定", new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) {
+								// TODO Auto-generated method stub
+								String screenshot_name = null;
+								try {
+									screenshot_name = edittext.getText()
+											.toString();
+								} catch (Exception e) {
+									// TODO: handle exception
+									runOnUiThread(new Runnable() {
+										public void run() {
+											Toast.makeText(
+													SurfaceViewMain.this,
+													"请输入正确的文件名！",
+													Toast.LENGTH_SHORT).show();
+										}
+									});
+									return;
+								}
+								if (screenshot_name.equals("")) {
+									runOnUiThread(new Runnable() {
+										public void run() {
+											Toast.makeText(
+													SurfaceViewMain.this,
+													"请输入文件名！",
+													Toast.LENGTH_SHORT).show();
+										}
+									});
+								} else {
+									final String str = myView
+											.onScreenshot(screenshot_name);
+									if (str != null)
+										runOnUiThread(new Runnable() {
+											public void run() {
+												Toast.makeText(
+														SurfaceViewMain.this,
+														"截图成功！输出文件于：" + str,
+														Toast.LENGTH_SHORT)
+														.show();
+											}
+										});
+								}
+							}
+						});
+
+						builder.create().show();// 创建alertdialog
+
+						return false;
+					}
+				});
+		return true;
 
 	}
 }

@@ -59,36 +59,36 @@ public class NaviActivity extends Activity {
 		setContentView(R.layout.layout_navi);
 		Button btn_weblist = (Button) findViewById(R.id.btn_weblist);
 		Button btn_locallist = (Button) findViewById(R.id.btn_locallist);
-		Button btn_test = (Button) findViewById(R.id.btn_test);
-		btn_test.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				new Thread(new Runnable() {
-					public void run() {
-						try {
-							// String cachePath =
-							// getExternalCacheDir().getPath();
-							// FileUtils
-							// .byte2File(test(), cachePath, "wujun.gexf");
-							// runOnUiThread(new Runnable() {
-							// public void run() {
-							// Toast.makeText(NaviActivity.this,
-							// "文件下载完成！请到本地文件列表查看",
-							// Toast.LENGTH_LONG).show();
-							// }
-							// });
-							test();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-				}).start();
-			}
-		});
+//		Button btn_test = (Button) findViewById(R.id.btn_test);
+//		btn_test.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View arg0) {
+//				// TODO Auto-generated method stub
+//				new Thread(new Runnable() {
+//					public void run() {
+//						try {
+//							// String cachePath =
+//							// getExternalCacheDir().getPath();
+//							// FileUtils
+//							// .byte2File(test(), cachePath, "wujun.gexf");
+//							// runOnUiThread(new Runnable() {
+//							// public void run() {
+//							// Toast.makeText(NaviActivity.this,
+//							// "文件下载完成！请到本地文件列表查看",
+//							// Toast.LENGTH_LONG).show();
+//							// }
+//							// });
+//							test();
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//
+//					}
+//				}).start();
+//			}
+//		});
 
 		btn_weblist.setOnClickListener(new OnClickListener() {
 

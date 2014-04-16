@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/bkg" >
+    android:background="@drawable/bkg"
+    android:orientation="vertical" >
 
     <Button
         android:id="@+id/btn_weblist"
@@ -12,7 +13,6 @@
         android:layout_above="@+id/btn_locallist"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="52dp"
-        
         android:text="获取网络文件列表" />
 
     <TextView
@@ -23,16 +23,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="58dp"
         android:text="数据挖掘可视化"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Button
-        android:id="@+id/btn_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_locallist"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:text="Button" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FF8D2A" />
 
     <Button
         android:id="@+id/btn_locallist"

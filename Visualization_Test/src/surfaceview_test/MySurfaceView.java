@@ -1,6 +1,7 @@
 package surfaceview_test;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,11 @@ import Utils.GexfUtils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.*;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -32,9 +36,9 @@ public class MySurfaceView extends SurfaceView implements
 	String filename = "";
 	String clickname = "";
 	File gexffile = null;
-	InputStream ipstrm=null;
-	
-
+	InputStream ipstrm = null;
+	private boolean bScreenshot = false;
+	String screenshot_name = "";
 	// 相关参数
 	int iViewHeight = 0;// 视图高
 	int iViewWidth = 0;// 视图宽
@@ -45,6 +49,7 @@ public class MySurfaceView extends SurfaceView implements
 
 	SurfaceHolder holder;
 	private MyThread myThread;
+	private Canvas canvas;
 	// float x = 0, y = 0;
 	// Paint pp = new Paint();
 	LogicManager logicManager;
@@ -59,9 +64,8 @@ public class MySurfaceView extends SurfaceView implements
 		// pp.setColor(Color.RED);
 		setFocusable(true);
 	}
-	
-	public MySurfaceView(Context context,File gexffile)
-	{
+
+	public MySurfaceView(Context context, File gexffile) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		this.gexffile = gexffile;
@@ -71,8 +75,8 @@ public class MySurfaceView extends SurfaceView implements
 		// pp.setColor(Color.RED);
 		setFocusable(true);
 	}
-	public MySurfaceView(Context context,InputStream ipstrm)
-	{
+
+	public MySurfaceView(Context context, InputStream ipstrm) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		this.ipstrm = ipstrm;
@@ -120,6 +124,20 @@ public class MySurfaceView extends SurfaceView implements
 		}
 	}
 
+	/**
+	 * 进行当前画布截图并保存
+	 * 
+	 * @param screenshot_name
+	 *            保存的文件路径
+	 * @return 保存的路径位置
+	 */
+	protected String onScreenshot(String screenshot_name) {
+		setbScreenshot(true);
+		this.screenshot_name = screenshot_name;
+		return (SurfaceViewMain.scrsFileRootPath
+				+ screenshot_name + ".png");
+	}
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -129,19 +147,23 @@ public class MySurfaceView extends SurfaceView implements
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		Canvas canvas = holder.lockCanvas();
+		this.canvas = holder.lockCanvas();
 		if (null != canvas) {
 			iViewHeight = canvas.getHeight();
 			iViewWidth = canvas.getWidth();
 			Log.d(DEBUG_TAG, "获取的视图高宽=" + iViewHeight + "x" + iViewWidth);
+			// 为输出canvas截图做准备
+			// Bitmap bitmap = Bitmap.createBitmap(iViewWidth, iViewHeight,
+			// Config.ARGB_8888);
+			// canvas.setBitmap(bitmap);
 		}
 		holder.unlockCanvasAndPost(canvas);
 		logicManager = new LogicManager(iViewHeight, iViewWidth, iViewRow,
 				iViewCol);
-//		Map<String, WeiboData> map = GexfUtils.gexfDecoder(getResources(),
-//				filename + ".gexf");
+		// Map<String, WeiboData> map = GexfUtils.gexfDecoder(getResources(),
+		// filename + ".gexf");
 		Map<String, WeiboData> map = GexfUtils.gexfDecoder(gexffile);
-//		Map<String, WeiboData> map = GexfUtils.gexfDecoder(ipstrm);
+		// Map<String, WeiboData> map = GexfUtils.gexfDecoder(ipstrm);
 		ArrayList<NodeDomainLogic> logiclist = NodeDomainLogic
 				.creatDomainLogicByMap(map, logicManager);
 		for (int i = 0; i < logiclist.size(); i++) {
@@ -166,6 +188,14 @@ public class MySurfaceView extends SurfaceView implements
 		// msg.obtain();
 	}
 
+	public boolean isbScreenshot() {
+		return bScreenshot;
+	}
+
+	public void setbScreenshot(boolean bScreenshot) {
+		this.bScreenshot = bScreenshot;
+	}
+
 	// 线程内部类
 	class MyThread extends Thread {
 		private SurfaceHolder holder;
@@ -187,9 +217,19 @@ public class MySurfaceView extends SurfaceView implements
 			logicManager.onOverallUpdate();
 			while (isRun) {
 				Canvas canvas = null;
+				boolean bCanvasLock = true;
 				try {
 					synchronized (holder) {
-						canvas = holder.lockCanvas();// 锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
+						// 截图相关
+						Bitmap bitmap = null;
+						if (isbScreenshot()) {
+							setbScreenshot(false);
+							bCanvasLock = false;
+							bitmap = Bitmap.createBitmap(getWidth(),
+									getHeight(), Bitmap.Config.ARGB_8888);
+							canvas = new Canvas(bitmap);
+						} else
+							canvas = holder.lockCanvas();// 锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
 						canvas.drawColor(Color.WHITE);// 设置画布背景颜色
 						// Rect r = new Rect(100, 50, 300, 250);
 						// c.drawRect(r, p);
@@ -214,20 +254,35 @@ public class MySurfaceView extends SurfaceView implements
 								logic.getView().OnDraw(canvas, logicManager,
 										null);
 							}
-						canvas.drawText("文件名："+gexffile.getName()+"\n共绘制" + logicManager.NodesMap.size()
-								+ "个点", 0, 50, p);
-						canvas.drawText("点到了" + clickname, 0, 20, p);
-
+						canvas.drawText("文件名：" + gexffile.getName() + "\n共绘制"
+								+ logicManager.NodesMap.size() + "个点", 0, 20, p);
+//						canvas.drawText("点到了" + clickname, 0, 20, p);
 						// screenDrawLogic.getDomainLogic(123).getView().OnDraw(c,
 						// null);
 						// c.drawCircle(x, y, 30, pp);
 						// Thread.sleep(1000);// 睡眠时间为1秒
+
+						// 截图相关
+						if (null != bitmap) {
+							String strFilePath;
+							buildDrawingCache();
+							System.out.println("截图：" + bitmap);
+							bitmap.compress(
+									CompressFormat.PNG,
+									100,
+									new FileOutputStream(
+											strFilePath=SurfaceViewMain.scrsFileRootPath
+													+ screenshot_name + ".png"));
+							System.out.println("输出图片" + strFilePath);
+							bitmap = null;
+						}
+
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
 				} finally {// 无论如何都要提交
-					if (canvas != null) {
+					if (canvas != null && bCanvasLock) {
 						holder.unlockCanvasAndPost(canvas);// 结束锁定画图，并提交改变。
 
 					}
