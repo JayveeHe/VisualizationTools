@@ -131,6 +131,7 @@ public class NodeDomainData {
 	 * @param logicManager
 	 */
 	public void onCalculateViewXY(LogicManager logicManager) {
+//		this.fCurX
 		this.fViewX = (fCurX * logicManager.fScaleRate + logicManager.fXOffset);
 		this.fViewY = (fCurY * logicManager.fScaleRate + logicManager.fYOffset);
 		// onLocationChanged(logicManager);

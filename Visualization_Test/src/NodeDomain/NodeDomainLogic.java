@@ -27,7 +27,7 @@ public class NodeDomainLogic {
 		this.setAtomNode(isAtomNode);
 		if (null != getData() && null != getView()) {
 			Log.d(DEBUG_TAG, "领域对象" + ID + "创建完成!");
-			Log.d(DEBUG_TAG, this.toString());
+//			Log.d(DEBUG_TAG, this.toString());
 		} else
 			Log.e(DEBUG_TAG, "领域对象创建失败!检查data与view是否为空");
 

@@ -140,7 +140,7 @@ public class LogicManager {
 			transXY2CR(data.getCurX(), data.getCurY())
 					.setLocation(data.getID());
 		} catch (NullPointerException e) {
-			Log.e(DEBUG_TAG, "addDomainlogic时发生错误");
+//			Log.e(DEBUG_TAG, "addDomainlogic时发生错误");
 		}
 		AtomNodeLogics.add(domainLogic);
 	}
@@ -254,7 +254,7 @@ public class LogicManager {
 		if (iCol >= this.iViewCol || iCol < 0 || iRow >= this.iViewRow
 				|| iRow < 0)// 即数组越界
 		{
-			Log.e(DEBUG_TAG, "drawingMatrixs数组越界！");
+//			Log.e(DEBUG_TAG, "drawingMatrixs数组越界！");
 			return null;
 		}
 		return drawingMatrixs[iRow][iCol];

@@ -161,7 +161,7 @@ public class GexfUtils {
 				// e.printStackTrace();
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
-			System.out.println(label);
+//			System.out.println(label);
 			WeiboData weibodata = new WeiboData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
