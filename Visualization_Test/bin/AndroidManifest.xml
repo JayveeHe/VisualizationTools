@@ -38,6 +38,7 @@
             android:name="ui.ListActivity"
             android:label="文件列表" >
         </activity>
+        <activity android:name="ui.Viewpager_main"></activity>
     </application>
 
 </manifest>

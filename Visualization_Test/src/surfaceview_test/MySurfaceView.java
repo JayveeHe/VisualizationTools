@@ -48,7 +48,7 @@ public class MySurfaceView extends SurfaceView implements
 	int iLogicalCol = 10;
 
 	SurfaceHolder holder;
-	private MyThread myThread;
+	protected MyThread myThread;
 	private Canvas canvas;
 	// float x = 0, y = 0;
 	// Paint pp = new Paint();
@@ -134,8 +134,7 @@ public class MySurfaceView extends SurfaceView implements
 	protected String onScreenshot(String screenshot_name) {
 		setbScreenshot(true);
 		this.screenshot_name = screenshot_name;
-		return (SurfaceViewMain.scrsFileRootPath
-				+ screenshot_name + ".png");
+		return (SurfaceViewMain.scrsFileRootPath + screenshot_name + ".png");
 	}
 
 	@Override
@@ -206,6 +205,17 @@ public class MySurfaceView extends SurfaceView implements
 			isRun = true;
 		}
 
+		public void onSuspend() throws InterruptedException {
+//			isRun = false;
+			myThread.wait();
+		}
+		
+		public void onResume()
+		{
+//			isRun = true;
+			myThread.resume();
+		}
+
 		@Override
 		public void run() {
 			// int count = 0;
@@ -256,7 +266,7 @@ public class MySurfaceView extends SurfaceView implements
 							}
 						canvas.drawText("文件名：" + gexffile.getName() + "\n共绘制"
 								+ logicManager.NodesMap.size() + "个点", 0, 20, p);
-//						canvas.drawText("点到了" + clickname, 0, 20, p);
+						// canvas.drawText("点到了" + clickname, 0, 20, p);
 						// screenDrawLogic.getDomainLogic(123).getView().OnDraw(c,
 						// null);
 						// c.drawCircle(x, y, 30, pp);
@@ -271,7 +281,7 @@ public class MySurfaceView extends SurfaceView implements
 									CompressFormat.PNG,
 									100,
 									new FileOutputStream(
-											strFilePath=SurfaceViewMain.scrsFileRootPath
+											strFilePath = SurfaceViewMain.scrsFileRootPath
 													+ screenshot_name + ".png"));
 							System.out.println("输出图片" + strFilePath);
 							bitmap = null;

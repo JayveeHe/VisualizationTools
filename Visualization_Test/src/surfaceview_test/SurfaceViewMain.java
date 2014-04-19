@@ -2,14 +2,17 @@ package surfaceview_test;
 
 import java.io.File;
 
+import ui.Viewpager_main;
 import jayvee.visualization_test.R;
 //import jayvee.visualization_test.R
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -33,6 +36,8 @@ public class SurfaceViewMain extends Activity {
 	MySurfaceView myView;
 	Builder builder;
 	public static String scrsFileRootPath;
+	private static final String DEBUG_TAG = "SurfaceViewMain";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -128,18 +133,29 @@ public class SurfaceViewMain extends Activity {
 
 		myView.setOnTouchListener(Mytouch);
 
-		// myView.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// // TODO Auto-generated method stub
-		// if (event.getAction() == MotionEvent.ACTION_DOWN) {
-		// myView.onTouchSetXY(event.getX(), event.getY());
-		// }
-		// return false;
-		// }
-		// });
 
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		Log.d(DEBUG_TAG, "onresume");
+		myView.myThread.onResume();
+//		setContentView(myView);
+	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		Log.d(DEBUG_TAG, "onpause");
+		try {
+			myView.myThread.onSuspend();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -210,6 +226,20 @@ public class SurfaceViewMain extends Activity {
 						return false;
 					}
 				});
+
+		menu.getItem(1).setOnMenuItemClickListener(
+				new OnMenuItemClickListener() {
+
+					@Override
+					public boolean onMenuItemClick(MenuItem item) {
+						// TODO Auto-generated method stub
+						Intent intent = new Intent(SurfaceViewMain.this,
+								Viewpager_main.class);
+						startActivity(intent);
+						return false;
+					}
+				});
+
 		return true;
 
 	}
