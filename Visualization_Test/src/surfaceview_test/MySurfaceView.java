@@ -71,7 +71,6 @@ public class MySurfaceView extends SurfaceView implements
 		this.gexffile = gexffile;
 		holder = this.getHolder();
 		holder.addCallback(this);
-		myThread = new MyThread(holder);
 		// pp.setColor(Color.RED);
 		setFocusable(true);
 	}
@@ -168,7 +167,7 @@ public class MySurfaceView extends SurfaceView implements
 		for (int i = 0; i < logiclist.size(); i++) {
 			logicManager.addDomainLogic(logiclist.get(i));
 		}
-
+		myThread = new MyThread(holder);
 		myThread.isRun = true;
 		myThread.start();
 	}
@@ -177,10 +176,13 @@ public class MySurfaceView extends SurfaceView implements
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		myThread.isRun = false;
+		// myThread.wait();
+		Log.d(DEBUG_TAG, "surfacedestroyed");
+		// myThread.stop();
 	}
 
 	/**
-	 * MySurfaceView视图创建完毕的回调函数
+	 * ` MySurfaceView视图创建完毕的回调函数
 	 */
 	public void onCompleted() {
 		Message msg = new Message();
@@ -205,16 +207,16 @@ public class MySurfaceView extends SurfaceView implements
 			isRun = true;
 		}
 
-		public void onSuspend() throws InterruptedException {
-//			isRun = false;
-			myThread.wait();
-		}
-		
-		public void onResume()
-		{
-//			isRun = true;
-			myThread.resume();
-		}
+		// public void onSuspend() throws InterruptedException {
+		// isRun = false;
+		// // myThread.suspend();
+		// }
+
+		// public void onResume()
+		// {
+		// isRun = true;
+		// // myThread.start();
+		// }
 
 		@Override
 		public void run() {

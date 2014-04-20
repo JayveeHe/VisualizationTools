@@ -106,14 +106,14 @@ public class MyFragment extends Fragment {
 	private void SetPie(View view) {
 		final PieGraph pg = (PieGraph) view.findViewById(R.id.graph_sex);
 		PieSlice slice = new PieSlice();
-		slice.setColor(Color.parseColor("#99CC00"));
+		slice.setColor(Color.parseColor("#33B5E5"));
 		slice.setValue(2);
-		slice.setTitle("第一个");
+		slice.setTitle("男生");
 		pg.addSlice(slice);
 		slice = new PieSlice();
-		slice.setColor(Color.parseColor("#FFBB33"));
+		slice.setColor(Color.parseColor("#FF4444"));
 		slice.setValue(3);
-		slice.setTitle("第二个");
+		slice.setTitle("女生");
 		pg.addSlice(slice);
 		// slice = new PieSlice();
 		// slice.setColor(Color.parseColor("#AA66CC"));

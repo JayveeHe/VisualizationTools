@@ -141,7 +141,7 @@ public class SurfaceViewMain extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.d(DEBUG_TAG, "onresume");
-		myView.myThread.onResume();
+//		myView.myThread.onResume();
 //		setContentView(myView);
 	}
 	
@@ -150,12 +150,12 @@ public class SurfaceViewMain extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d(DEBUG_TAG, "onpause");
-		try {
-			myView.myThread.onSuspend();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			myView.myThread.onSuspend();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override

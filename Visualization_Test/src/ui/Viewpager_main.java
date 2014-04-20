@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Locale;
 
+
 import jayvee.visualization_test.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,8 @@ public class Viewpager_main extends FragmentActivity {
 		MyPagerAdapter myPagerAdapter = new MyPagerAdapter(
 				getSupportFragmentManager());
 		pager.setAdapter(myPagerAdapter);
+//		TabPageIndicator tabPageIndicator =(TabPageIndicator) findViewById(R.id.indicator);
+//		tabPageIndicator.setViewPager(pager);
 	}
 
 	class MyPagerAdapter extends FragmentPagerAdapter {
