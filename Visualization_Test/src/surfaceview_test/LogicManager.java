@@ -1,5 +1,6 @@
 package surfaceview_test;
 
+import java.security.DomainCombiner;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +18,8 @@ public class LogicManager {
 	public DrawingMatrix[][] drawingMatrixs = null;
 	Map<String, NodeDomainLogic> NodesMap = null;
 	ArrayList<NodeDomainLogic> AtomNodeLogics = null;
-	private boolean isChanging = false;//用于监测是否处于拖动、缩放状态
-	
-	
+	private boolean isChanging = false;// 用于监测是否处于拖动、缩放状态
+
 	// 相关参数
 	public int iViewHeight = 0;// 视图高
 	public int iViewWidth = 0;// 视图宽
@@ -134,13 +134,13 @@ public class LogicManager {
 			Log.e(DEBUG_TAG, e.toString());
 		}
 		NodeDomainData data = domainLogic.getData();
-//		DrawingMatrix dm = transXY2CR(data.getCurX(), data.getCurY());
+		// DrawingMatrix dm = transXY2CR(data.getCurX(), data.getCurY());
 		// if(dm)
 		try {
 			transXY2CR(data.getCurX(), data.getCurY())
 					.setLocation(data.getID());
 		} catch (NullPointerException e) {
-//			Log.e(DEBUG_TAG, "addDomainlogic时发生错误");
+			// Log.e(DEBUG_TAG, "addDomainlogic时发生错误");
 		}
 		AtomNodeLogics.add(domainLogic);
 	}
@@ -216,11 +216,11 @@ public class LogicManager {
 		}
 		Log.d(DEBUG_TAG, "全局更新完毕");
 	}
-	
+
 	/**
 	 * 用于进行轻量级的图像刷新，一般在拖动、缩放时进行，用于更新绘图坐标。
 	 */
-	public void onViewRefresh(){
+	public void onViewRefresh() {
 		setChanging(true);
 		for (NodeDomainLogic logic : NodesMap.values()) {
 			NodeDomainData data = logic.getData();
@@ -232,13 +232,27 @@ public class LogicManager {
 		return NodesMap;
 	}
 
-	// public void deleteDomainLogic(NodeDomainLogic domainLogic) {
-	// try {
-	// NodesMap.remove(domainLogic.getID());
-	// } catch (Exception e) {
-	// Log.e(DEBUG_TAG, "删除对象异常!");
-	// }
-	// }
+	/**
+	 * 根据某个点的id，查找与它相关的领域群组并返回
+	 * 
+	 * @param id
+	 *            某点的id
+	 * @return 相关的领域群组的IDs
+	 */
+	public ArrayList<String> getGroupDomain(String id) {
+		ArrayList<String> groupIDs = new ArrayList<String>();
+		NodeDomainLogic nodeLogic = getDomainLogic(id);
+		String parentID = nodeLogic.getData().getParentID();
+		if (!parentID.equals("-1"))// 若母节点为根节点，则没有兄弟节点
+		{
+			ArrayList<String> brotherIDs = getDomainLogic(parentID).getData()
+					.getChildIDs();
+			groupIDs.addAll(brotherIDs);
+		}
+		ArrayList<String> childIDs = nodeLogic.getData().getChildIDs();
+		groupIDs.addAll(childIDs);
+		return groupIDs;
+	}
 
 	/**
 	 * 将像素单位的坐标转换为行列单位的坐标并返回相应逻辑方块的引用
@@ -254,7 +268,7 @@ public class LogicManager {
 		if (iCol >= this.iViewCol || iCol < 0 || iRow >= this.iViewRow
 				|| iRow < 0)// 即数组越界
 		{
-//			Log.e(DEBUG_TAG, "drawingMatrixs数组越界！");
+			// Log.e(DEBUG_TAG, "drawingMatrixs数组越界！");
 			return null;
 		}
 		return drawingMatrixs[iRow][iCol];
@@ -282,7 +296,7 @@ public class LogicManager {
 					return;// 及时退出（因为没有寻找的必要了）
 				}
 			}
-//			Log.e(DEBUG_TAG, "移除对象ID时未发现该ID!");
+			// Log.e(DEBUG_TAG, "移除对象ID时未发现该ID!");
 		}
 	}
 

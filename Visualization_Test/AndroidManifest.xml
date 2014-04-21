@@ -4,13 +4,13 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="13"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -19,15 +19,18 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="surfaceview_test.SurfaceViewMain"
-            android:label="复杂网络静态绘图" >
+            android:label="复杂网络静态绘图"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
         <activity
             android:name="surfaceview_test.MainActivity"
-            android:label="可视化研究" >
+            android:label="可视化研究"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
         <activity
             android:name="ui.NaviActivity"
-            android:label="数据挖掘可视化" >
+            android:label="数据挖掘可视化"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,9 +39,13 @@
         </activity>
         <activity
             android:name="ui.ListActivity"
-            android:label="文件列表" >
+            android:label="文件列表"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
-        <activity android:name="ui.Viewpager_main"></activity>
+        <activity
+            android:name="ui.Viewpager_main"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

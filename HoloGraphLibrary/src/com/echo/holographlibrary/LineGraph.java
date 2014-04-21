@@ -407,6 +407,7 @@ public class LineGraph extends View {
             lineCount++;
         }
 
+        //绘制底部横轴
         mPaint.reset();
         mPaint.setColor(Color.BLACK);
         mPaint.setAlpha(50);

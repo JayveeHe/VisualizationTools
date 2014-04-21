@@ -15,6 +15,7 @@ import NodeDomain.NodeDomainData;
 import NodeDomain.NodeDomainLogic;
 import Utils.GexfUtils;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.Bitmap.CompressFormat;
@@ -116,6 +117,11 @@ public class MySurfaceView extends SurfaceView implements
 				if (kk <= ((logicManager.fGridWidth + logicManager.fGridHeight))) {
 					Log.d(DEBUG_TAG, "点到了某个点");
 					clickname = logicManager.getDomainLogic(id).getData().key;
+					Builder builder = new Builder(getContext());
+					builder.setMessage("确定查看" + clickname + "的群组？");
+					builder.setPositiveButton("确定", null);
+					builder.setNegativeButton("取消", null);
+					builder.create().show();
 					return;
 				}
 

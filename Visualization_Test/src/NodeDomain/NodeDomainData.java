@@ -8,7 +8,7 @@ import android.util.Log;
 
 public class NodeDomainData {
 	private String ID;
-	private String ParentID = "-1";
+	private String ParentID = "-1";//根节点ID为-1
 	private ArrayList<String> ChildIDs;
 	protected Class<?> Obj;
 	private float fCurX = 0;// XY为绘制在视图上的坐标,需要通过下面的
@@ -20,7 +20,7 @@ public class NodeDomainData {
 	private float fAngle = (float) (Math.PI * 2);// 该节点相对于母节点与法线的角度
 	public int color;
 	public int group;
-	public String key;
+	public String key;// 该点的名字(key)
 
 	public int iLastRow = 0;
 	public int iLastCol = 0;
@@ -42,8 +42,8 @@ public class NodeDomainData {
 		this.setChildIDs(ChildIDs);
 	}
 
-	public NodeDomainData(String ID, String ParentID, ArrayList<String> ChildIDs,
-			LogicManager logicManager) {
+	public NodeDomainData(String ID, String ParentID,
+			ArrayList<String> ChildIDs, LogicManager logicManager) {
 		this.ID = ID;
 		this.ParentID = ParentID;
 		this.setChildIDs(ChildIDs);
@@ -131,7 +131,7 @@ public class NodeDomainData {
 	 * @param logicManager
 	 */
 	public void onCalculateViewXY(LogicManager logicManager) {
-//		this.fCurX
+		// this.fCurX
 		this.fViewX = (fCurX * logicManager.fScaleRate + logicManager.fXOffset);
 		this.fViewY = (fCurY * logicManager.fScaleRate + logicManager.fYOffset);
 		// onLocationChanged(logicManager);

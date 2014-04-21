@@ -37,6 +37,9 @@ public class Bar {
     private float mValue;
     private String mValueString = null;
 
+    //自行修改
+    private float aveValue = 0;//平均值
+    
     public int getColor() {
         return mColor;
     }
@@ -97,4 +100,12 @@ public class Bar {
     public Region getRegion() {
         return mRegion;
     }
+
+	public float getAveValue() {
+		return aveValue;
+	}
+
+	public void setAveValue(float aveValue) {
+		this.aveValue = aveValue;
+	}
 }

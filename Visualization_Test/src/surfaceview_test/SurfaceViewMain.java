@@ -1,6 +1,7 @@
 package surfaceview_test;
 
 import java.io.File;
+import java.util.Timer;
 
 import ui.Viewpager_main;
 import jayvee.visualization_test.R;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -37,6 +39,8 @@ public class SurfaceViewMain extends Activity {
 	Builder builder;
 	public static String scrsFileRootPath;
 	private static final String DEBUG_TAG = "SurfaceViewMain";
+
+	private long touchtime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class SurfaceViewMain extends Activity {
 					downY = event.getY();
 					FirstdownX = event.getX();
 					FirstdownY = event.getY();
-
+					touchtime = System.currentTimeMillis();
 					TouchMod = TOUCH_MOD_DRAG;
 					break;
 				case MotionEvent.ACTION_POINTER_DOWN:
@@ -103,10 +107,14 @@ public class SurfaceViewMain extends Activity {
 					TouchMod = 0;
 					distance = 0;
 					System.out.println("单指起来");
+					touchtime = System.currentTimeMillis() - touchtime ;// 手指按下并停留的时间
+					System.out.println("手指停留时间"+touchtime);
 					if (Math.sqrt((FirstdownX - event.getX())
 							* (FirstdownX - event.getX())
 							+ (FirstdownY - event.getY())
-							* (FirstdownY - event.getY())) < 20) {
+							* (FirstdownY - event.getY())) < 20
+							&& touchtime > 1000) 
+					{//手指没有大幅移动且按下时间大于2秒则进入长按选项
 						myView.onTouchSetXY(downX, downY);
 					}
 					myView.onChangeComplete();
@@ -133,7 +141,6 @@ public class SurfaceViewMain extends Activity {
 
 		myView.setOnTouchListener(Mytouch);
 
-
 	}
 
 	@Override
@@ -141,21 +148,21 @@ public class SurfaceViewMain extends Activity {
 		// TODO Auto-generated method stub
 		super.onResume();
 		Log.d(DEBUG_TAG, "onresume");
-//		myView.myThread.onResume();
-//		setContentView(myView);
+		// myView.myThread.onResume();
+		// setContentView(myView);
 	}
-	
+
 	@Override
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d(DEBUG_TAG, "onpause");
-//		try {
-//			myView.myThread.onSuspend();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		// try {
+		// myView.myThread.onSuspend();
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
 
 	@Override
