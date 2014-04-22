@@ -17,6 +17,7 @@ import Utils.GexfUtils;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.*;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Bitmap.Config;
@@ -54,6 +55,7 @@ public class MySurfaceView extends SurfaceView implements
 	// float x = 0, y = 0;
 	// Paint pp = new Paint();
 	LogicManager logicManager;
+	Builder builder;
 
 	public MySurfaceView(Context context, String filename) {
 		super(context);
@@ -98,10 +100,11 @@ public class MySurfaceView extends SurfaceView implements
 		logicManager.onOverallUpdate();
 	}
 
-	public void onTouchSetXY(float x, float y) {
+	public String onTouchSetXY(float x, float y) {
 		System.out.println("xy=" + x + "===" + y);
 		List<String> IDs = logicManager.transXY2CR(x, y).getLocatedIDs();
 		System.out.println("附近的ID数" + IDs.size());
+
 		if (IDs.size() != 0) {
 			for (String id : IDs) {
 				System.out.println("ID=" + id);
@@ -117,16 +120,12 @@ public class MySurfaceView extends SurfaceView implements
 				if (kk <= ((logicManager.fGridWidth + logicManager.fGridHeight))) {
 					Log.d(DEBUG_TAG, "点到了某个点");
 					clickname = logicManager.getDomainLogic(id).getData().key;
-					Builder builder = new Builder(getContext());
-					builder.setMessage("确定查看" + clickname + "的群组？");
-					builder.setPositiveButton("确定", null);
-					builder.setNegativeButton("取消", null);
-					builder.create().show();
-					return;
+					return id;
 				}
 
 			}
 		}
+		return null;
 	}
 
 	/**

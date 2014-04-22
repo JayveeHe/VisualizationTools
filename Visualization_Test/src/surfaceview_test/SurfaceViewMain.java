@@ -1,6 +1,10 @@
 package surfaceview_test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 import ui.Viewpager_main;
@@ -22,6 +26,7 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class SurfaceViewMain extends Activity {
@@ -41,6 +46,7 @@ public class SurfaceViewMain extends Activity {
 	private static final String DEBUG_TAG = "SurfaceViewMain";
 
 	private long touchtime;
+	private OnClickListener myonclick;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +69,8 @@ public class SurfaceViewMain extends Activity {
 		// Button btn_save =
 
 		OnTouchListener Mytouch = new OnTouchListener() {
+
+			private SimpleAdapter simpleadapter;
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -107,15 +115,70 @@ public class SurfaceViewMain extends Activity {
 					TouchMod = 0;
 					distance = 0;
 					System.out.println("单指起来");
-					touchtime = System.currentTimeMillis() - touchtime ;// 手指按下并停留的时间
-					System.out.println("手指停留时间"+touchtime);
+					touchtime = System.currentTimeMillis() - touchtime;// 手指按下并停留的时间
+					System.out.println("手指停留时间" + touchtime);
 					if (Math.sqrt((FirstdownX - event.getX())
 							* (FirstdownX - event.getX())
 							+ (FirstdownY - event.getY())
 							* (FirstdownY - event.getY())) < 20
-							&& touchtime > 1000) 
-					{//手指没有大幅移动且按下时间大于2秒则进入长按选项
-						myView.onTouchSetXY(downX, downY);
+							&& touchtime > 1000) {// 手指没有大幅移动且按下时间大于2秒则进入长按选项
+						final String clickID = myView
+								.onTouchSetXY(downX, downY);
+						myView.builder.setMessage("确定查看"
+								+ myView.logicManager.getDomainLogic(clickID)
+										.getData().key + "的群组？");
+						myView.builder.setPositiveButton("确定",
+								new OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										// TODO Auto-generated method stub
+										final ArrayList<String> idlist = myView.logicManager
+												.getGroupDomain(clickID);
+										ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
+										Map<String, String> map = null;
+										for (String id : idlist) {
+											map = new HashMap<String, String>();
+											map.put("id", id);
+											map.put("key", myView.logicManager
+													.getDomainLogic(id)
+													.getData().key);
+											list.add(map);
+										}
+										String[] strs = { "key" };
+										int[] tos = { R.id.text_alertlist };
+//										simpleadapter = new SimpleAdapter(
+//												SurfaceViewMain.this, list,
+//												R.layout.layout_alertlist,
+//												strs, tos);
+//										builder.setAdapter(simpleadapter,
+//												new OnClickListener() {
+//
+//													@Override
+//													public void onClick(
+//															DialogInterface dialog,
+//															final int which) {
+//														// TODO Auto-generated
+//														runOnUiThread(
+//																new Runnable() {
+//																	public void run() {
+//																		Toast.makeText(
+//																				SurfaceViewMain.this,
+//																				myView.logicManager
+//																						.getDomainLogic(
+//																								idlist.get(which))
+//																						.getData().key,
+//																				Toast.LENGTH_SHORT)
+//																				.show();
+//																	}
+//																});
+//													}
+//												});
+									}
+								});
+						myView.builder.setNegativeButton("取消", null);
+						myView.builder.create().show();
 					}
 					myView.onChangeComplete();
 					break;
