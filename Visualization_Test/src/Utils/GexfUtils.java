@@ -185,6 +185,11 @@ public class GexfUtils {
 		return map;
 	}
 	
+	/**
+	 * 以输入流的形式读取gexf
+	 * @param inpt_strm
+	 * @return
+	 */
 	public static Map<String, WeiboData> gexfDecoder(InputStream inpt_strm) {
 
 		SAXReader saxReader = new SAXReader();

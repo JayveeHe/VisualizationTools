@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import ui.Viewpager_main;
 import jayvee.visualization_test.R;
 //import jayvee.visualization_test.R
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -23,7 +23,6 @@ import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
@@ -41,12 +40,11 @@ public class SurfaceViewMain extends Activity {
 	final static int TOUCH_MOD_DRAG = 1;
 	final static int TOUCH_MOD_ZOOM = 2;
 	MySurfaceView myView;
-	Builder builder;
+	private Builder builder;
 	public static String scrsFileRootPath;
 	private static final String DEBUG_TAG = "SurfaceViewMain";
 
 	private long touchtime;
-	private OnClickListener myonclick;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +68,12 @@ public class SurfaceViewMain extends Activity {
 
 		OnTouchListener Mytouch = new OnTouchListener() {
 
-			private SimpleAdapter simpleadapter;
-
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
 				switch (event.getAction() & MotionEvent.ACTION_MASK) {
 				case MotionEvent.ACTION_DOWN:
-					System.out.println("单指按下");
+					Log.d("Touch", "单指按下");
 					// System.out.println(event.getX(0));
 					downX = event.getX();
 					downY = event.getY();
@@ -87,7 +83,7 @@ public class SurfaceViewMain extends Activity {
 					TouchMod = TOUCH_MOD_DRAG;
 					break;
 				case MotionEvent.ACTION_POINTER_DOWN:
-					System.out.println("多指按下");
+					Log.d("Touch", "多指按下");
 					// System.out.println(event.getX(0) + "++++" +
 					// event.getX(1));
 					distance = distance(event);
@@ -114,9 +110,9 @@ public class SurfaceViewMain extends Activity {
 				case MotionEvent.ACTION_UP:
 					TouchMod = 0;
 					distance = 0;
-					System.out.println("单指起来");
+					Log.d("Touch", "单指起来");
 					touchtime = System.currentTimeMillis() - touchtime;// 手指按下并停留的时间
-					System.out.println("手指停留时间" + touchtime);
+					Log.d("Touch", "手指停留时间" + touchtime);
 					if (Math.sqrt((FirstdownX - event.getX())
 							* (FirstdownX - event.getX())
 							+ (FirstdownY - event.getY())
@@ -124,61 +120,11 @@ public class SurfaceViewMain extends Activity {
 							&& touchtime > 1000) {// 手指没有大幅移动且按下时间大于2秒则进入长按选项
 						final String clickID = myView
 								.onTouchSetXY(downX, downY);
-						myView.builder.setMessage("确定查看"
-								+ myView.logicManager.getDomainLogic(clickID)
-										.getData().key + "的群组？");
-						myView.builder.setPositiveButton("确定",
-								new OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										// TODO Auto-generated method stub
-										final ArrayList<String> idlist = myView.logicManager
-												.getGroupDomain(clickID);
-										ArrayList<Map<String, String>> list = new ArrayList<Map<String, String>>();
-										Map<String, String> map = null;
-										for (String id : idlist) {
-											map = new HashMap<String, String>();
-											map.put("id", id);
-											map.put("key", myView.logicManager
-													.getDomainLogic(id)
-													.getData().key);
-											list.add(map);
-										}
-										String[] strs = { "key" };
-										int[] tos = { R.id.text_alertlist };
-//										simpleadapter = new SimpleAdapter(
-//												SurfaceViewMain.this, list,
-//												R.layout.layout_alertlist,
-//												strs, tos);
-//										builder.setAdapter(simpleadapter,
-//												new OnClickListener() {
-//
-//													@Override
-//													public void onClick(
-//															DialogInterface dialog,
-//															final int which) {
-//														// TODO Auto-generated
-//														runOnUiThread(
-//																new Runnable() {
-//																	public void run() {
-//																		Toast.makeText(
-//																				SurfaceViewMain.this,
-//																				myView.logicManager
-//																						.getDomainLogic(
-//																								idlist.get(which))
-//																						.getData().key,
-//																				Toast.LENGTH_SHORT)
-//																				.show();
-//																	}
-//																});
-//													}
-//												});
-									}
-								});
-						myView.builder.setNegativeButton("取消", null);
-						myView.builder.create().show();
+						if (null != clickID) {
+							Log.d("Touch", "点到的ID=" + clickID+"\tparentID="+myView.logicManager.getDomainLogic(clickID).getData().getParentID());
+							
+							showGroupNames(clickID, myView);
+						}
 					}
 					myView.onChangeComplete();
 					break;
@@ -206,6 +152,67 @@ public class SurfaceViewMain extends Activity {
 
 	}
 
+	/**
+	 * 显示群组名字
+	 * 
+	 * @param clickID
+	 *            点到的用户ID
+	 */
+	private void showGroupNames(final String clickID, final MySurfaceView myView) {
+		myView.builder.setMessage("确定查看"
+				+ myView.logicManager.getDomainLogic(clickID).getData().key
+				+ "的群组？");
+		final List<Map<String, String>> itemlist = new ArrayList<Map<String, String>>();
+		ArrayList<String> idlist = myView.logicManager.getGroupDomain(clickID);
+		for (String id : idlist) {
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("id", id);
+			map.put("key", myView.logicManager.getDomainLogic(id).getData().key);
+			itemlist.add(map);
+		}
+
+		final SimpleAdapter simpleAdapter = new SimpleAdapter(this, itemlist,
+				R.layout.layout_alertlist, new String[] { "key" },
+				new int[] { R.id.text_alertitem });
+
+		OnClickListener myListener = new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO Auto-generated method stub
+				Builder listbuilder = new Builder(SurfaceViewMain.this);
+				listbuilder.setTitle(myView.logicManager
+						.getDomainLogic(clickID).getData().key + "的群组用户");
+				listbuilder.setNeutralButton("返回", null);
+				listbuilder.setAdapter(simpleAdapter, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+						String id = itemlist.get(which).get("id");
+						final String key = itemlist.get(which).get("key");
+						runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(SurfaceViewMain.this, key,
+										Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
+				});
+				AlertDialog listDialog = listbuilder.create();
+				listDialog.show();
+				listDialog.getWindow().setLayout(myView.getWidth() * 3 / 4,
+						myView.getHeight() * 3 / 5);
+
+			}
+		};
+
+		myView.builder.setPositiveButton("确定", myListener);
+		myView.builder.setNegativeButton("取消", null);
+		myView.builder.create().show();
+
+	}
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -220,12 +227,6 @@ public class SurfaceViewMain extends Activity {
 		// TODO Auto-generated method stub
 		super.onPause();
 		Log.d(DEBUG_TAG, "onpause");
-		// try {
-		// myView.myThread.onSuspend();
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 	}
 
 	@Override
@@ -242,7 +243,7 @@ public class SurfaceViewMain extends Activity {
 								SurfaceViewMain.this);
 						builder.setView(edittext);
 						builder.setTitle("请输入保存截图的文件名");
-						builder.setCancelable(false);
+						builder.setCancelable(true);
 						builder.setNegativeButton("取消", null);
 						builder.setPositiveButton("确定", new OnClickListener() {
 

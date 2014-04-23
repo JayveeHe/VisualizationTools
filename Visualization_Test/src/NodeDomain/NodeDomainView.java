@@ -78,7 +78,9 @@ public class NodeDomainView {
 				* logicManager.fScaleRate, p);
 
 		// 节点名字的绘制
-		if (logicManager.fScaleRate > 3.5)// 缩放达到某个阈值进行名字显示
+		if (logicManager.fScaleRate > 3.5
+				&& (Math.abs((data.getViewX())) < logicManager.iViewWidth && Math
+						.abs((data.getViewY())) < logicManager.iViewHeight))// 缩放达到某个阈值且该节点在画面内才进行名字显示
 		{
 			canvas.drawText(data.key, data.getViewX(), data.getViewY(),
 					textpaint);

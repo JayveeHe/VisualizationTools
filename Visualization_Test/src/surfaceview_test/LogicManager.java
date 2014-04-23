@@ -235,6 +235,8 @@ public class LogicManager {
 	/**
 	 * 根据某个点的id，查找与它相关的领域群组并返回
 	 * 
+	 * 注意！此处的判断只适用于ITTC的挖掘结果gexf文件（即根节点的ID为-1）
+	 * 
 	 * @param id
 	 *            某点的id
 	 * @return 相关的领域群组的IDs
@@ -243,14 +245,27 @@ public class LogicManager {
 		ArrayList<String> groupIDs = new ArrayList<String>();
 		NodeDomainLogic nodeLogic = getDomainLogic(id);
 		String parentID = nodeLogic.getData().getParentID();
-		if (!parentID.equals("-1"))// 若母节点为根节点，则没有兄弟节点
-		{
-			ArrayList<String> brotherIDs = getDomainLogic(parentID).getData()
-					.getChildIDs();
-			groupIDs.addAll(brotherIDs);
-		}
 		ArrayList<String> childIDs = nodeLogic.getData().getChildIDs();
-		groupIDs.addAll(childIDs);
+		if (childIDs.size() != 0) {
+			if (!parentID.equals("-1")) {
+				// 有子节点有母节点，则为普通的群组母节点,群组为它的所有子节点+自己
+				groupIDs.addAll(childIDs);
+				groupIDs.add(id);
+			} else {
+				// 有子节点无母节点，则为根节点，群组为它自己
+				groupIDs.add(id);
+			}
+		} else {
+			if (!nodeLogic.getData().getParentID().equals("-1")) {
+				// 无子节点有母节点，则为普通的叶子节点,群组为它的母节点的所有子节点+母节点
+				groupIDs.addAll(getDomainLogic(parentID).getData()
+						.getChildIDs());
+				groupIDs.add(parentID);
+			} else {
+				// 无子节点无母节点，则为孤立节点，群组为它自己
+				groupIDs.add(id);
+			}
+		}
 		return groupIDs;
 	}
 
@@ -290,10 +305,13 @@ public class LogicManager {
 
 		public void deleteLocation(String ID)// 删除已经离开该区域的对象ID
 		{
-			for (int i = 0; i < NodeObjectID.size(); i++) {
-				if (ID == NodeObjectID.get(i)) {
-					NodeObjectID.remove(i);
-					return;// 及时退出（因为没有寻找的必要了）
+			if (NodeObjectID.contains(ID)) {
+
+				for (int i = 0; i < NodeObjectID.size(); i++) {
+					if (ID == NodeObjectID.get(i)) {
+						NodeObjectID.remove(i);
+						return;// 及时退出（因为没有寻找的必要了）
+					}
 				}
 			}
 			// Log.e(DEBUG_TAG, "移除对象ID时未发现该ID!");

@@ -155,24 +155,18 @@ public class MySurfaceView extends SurfaceView implements
 			iViewHeight = canvas.getHeight();
 			iViewWidth = canvas.getWidth();
 			Log.d(DEBUG_TAG, "获取的视图高宽=" + iViewHeight + "x" + iViewWidth);
-			// 为输出canvas截图做准备
-			// Bitmap bitmap = Bitmap.createBitmap(iViewWidth, iViewHeight,
-			// Config.ARGB_8888);
-			// canvas.setBitmap(bitmap);
 		}
 		holder.unlockCanvasAndPost(canvas);
 		logicManager = new LogicManager(iViewHeight, iViewWidth, iViewRow,
 				iViewCol);
-		// Map<String, WeiboData> map = GexfUtils.gexfDecoder(getResources(),
-		// filename + ".gexf");
 		Map<String, WeiboData> map = GexfUtils.gexfDecoder(gexffile);
-		// Map<String, WeiboData> map = GexfUtils.gexfDecoder(ipstrm);
 		ArrayList<NodeDomainLogic> logiclist = NodeDomainLogic
 				.creatDomainLogicByMap(map, logicManager);
 		for (int i = 0; i < logiclist.size(); i++) {
 			logicManager.addDomainLogic(logiclist.get(i));
 		}
 		myThread = new MyThread(holder);
+		builder = new Builder(getContext());
 		myThread.isRun = true;
 		myThread.start();
 	}
@@ -181,17 +175,14 @@ public class MySurfaceView extends SurfaceView implements
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
 		myThread.isRun = false;
-		// myThread.wait();
 		Log.d(DEBUG_TAG, "surfacedestroyed");
-		// myThread.stop();
 	}
 
 	/**
 	 * ` MySurfaceView视图创建完毕的回调函数
 	 */
 	public void onCompleted() {
-		Message msg = new Message();
-		// msg.obtain();
+//		Message msg = new Message();
 	}
 
 	public boolean isbScreenshot() {
@@ -211,17 +202,6 @@ public class MySurfaceView extends SurfaceView implements
 			this.holder = holder;
 			isRun = true;
 		}
-
-		// public void onSuspend() throws InterruptedException {
-		// isRun = false;
-		// // myThread.suspend();
-		// }
-
-		// public void onResume()
-		// {
-		// isRun = true;
-		// // myThread.start();
-		// }
 
 		@Override
 		public void run() {
@@ -248,37 +228,17 @@ public class MySurfaceView extends SurfaceView implements
 						} else
 							canvas = holder.lockCanvas();// 锁定画布，一般在锁定后就可以通过其返回的画布对象Canvas，在其上面画图等操作了。
 						canvas.drawColor(Color.WHITE);// 设置画布背景颜色
-						// Rect r = new Rect(100, 50, 300, 250);
-						// c.drawRect(r, p);
-						// c.drawText("这是第" + (count++) + "秒", 100, 310, p);
-						// logicManager.FDA();
-						// logicManager.onOverallUpdate();
 						if (logicManager != null)
 							for (NodeDomainLogic logic : logicManager
 									.getNodesMap().values()) {
-								// NodeDomainData data = logic.getData();
-								// data.onModify(NodeDomainData.MODIFY_X,
-								// data.getCurX()
-								// + data.Xdiffer, logicManager);
-								// data.onModify(NodeDomainData.MODIFY_Y,
-								// data.getCurY()
-								// + data.Ydiffer, logicManager);
-								// data.Xdiffer = 0;
-								// data.Ydiffer = 0;// FDA偏移量每次计算过后就清零
-								// data.onCalculateViewXY(logicManager);
-								// data.onLocationChanged(logicManager);
 								// 遍历整个逻辑表
 								logic.getView().OnDraw(canvas, logicManager,
 										null);
 							}
 						canvas.drawText("文件名：" + gexffile.getName() + "\n共绘制"
 								+ logicManager.NodesMap.size() + "个点", 0, 20, p);
-						// canvas.drawText("点到了" + clickname, 0, 20, p);
-						// screenDrawLogic.getDomainLogic(123).getView().OnDraw(c,
-						// null);
-						// c.drawCircle(x, y, 30, pp);
-						// Thread.sleep(1000);// 睡眠时间为1秒
 
+						
 						// 截图相关
 						if (null != bitmap) {
 							String strFilePath;
