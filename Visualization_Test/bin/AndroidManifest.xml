@@ -43,7 +43,7 @@
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
         <activity
-            android:name="ui.Viewpager_main"
+            android:name="ui.ViewpagerActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
     </application>

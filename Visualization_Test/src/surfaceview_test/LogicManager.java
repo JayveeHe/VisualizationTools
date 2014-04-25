@@ -33,6 +33,10 @@ public class LogicManager {
 	public float fGridHeight;// 逻辑一格的高度(像素)
 	public float fGridWidth;// 逻辑一格的宽度(像素)
 
+	
+	public float fstartmidLogicX;//开始缩放时的触摸两指中点的逻辑坐标
+	public float fstartmidLogicY;
+	
 	/**
 	 * LogicManger的构造函数,请务必在View创建完成后调用!
 	 * 
@@ -217,6 +221,35 @@ public class LogicManager {
 		Log.d(DEBUG_TAG, "全局更新完毕");
 	}
 
+//	/**
+//	 * 开始缩放时进行调用的函数
+//	 */
+//	public void onStartZoom()
+//	{
+//		for (NodeDomainLogic logic : NodesMap.values()) {
+//			NodeDomainData data = logic.getData();
+//			data.onZoom(fstartmidX, fstartmidY);
+//		}
+//	}
+	
+	
+	/**
+	 * 将指定逻辑点坐标定位至指定视图坐标的函数,这是个全局改变函数，将会改变整个视图上所有点的坐标值
+	 * @param logicX 逻辑X坐标
+	 * @param logicY 逻辑Y坐标
+	 * @param viewX 需要定位至的视图X坐标
+	 * @param viewY 需要定位至的视图Y坐标
+	 */
+	public void onScaleLocated(float logicX,float logicY,float viewX,float viewY)
+	{
+		//首先将逻辑坐标转换成所映射到的视图坐标上，由此计算出需要的偏移改变量
+		float logicViewX = logicX*fScaleRate+fXOffset;
+		float logicViewY = logicY*fScaleRate+fYOffset;
+		fXOffset+=viewX-logicViewX;
+		fYOffset+=viewY-logicViewY;
+	}
+	
+	
 	/**
 	 * 用于进行轻量级的图像刷新，一般在拖动、缩放时进行，用于更新绘图坐标。
 	 */

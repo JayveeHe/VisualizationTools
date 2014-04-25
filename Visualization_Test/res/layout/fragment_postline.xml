@@ -5,6 +5,7 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
+        android:id="@+id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -21,12 +22,26 @@
             android:text="近期微博转发曲线"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
-        <com.echo.holographlibrary.LineGraph
+        <!--
+            <com.jjoe64.graphview.LineGraphView 
+            android:id="@+id/line_post"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            /> 
+            -->
+
+
+
+        <!--
+              <com.echo.holographlibrary.LineGraph
             android:id="@+id/graph_postline"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
+
+
+        -->
 
         <TextView
             android:id="@+id/text_dscp_postline"

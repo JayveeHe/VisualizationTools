@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ui.Viewpager_main;
+import ui.ViewpagerActivity;
 import jayvee.visualization_test.R;
+import NodeDomain.NodeDomainData;
+import NodeDomain.NodeDomainLogic;
 //import jayvee.visualization_test.R
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -67,6 +69,7 @@ public class SurfaceViewMain extends Activity {
 		// Button btn_save =
 
 		OnTouchListener Mytouch = new OnTouchListener() {
+			float midX = 0, midY = 0;
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -86,6 +89,14 @@ public class SurfaceViewMain extends Activity {
 					Log.d("Touch", "多指按下");
 					// System.out.println(event.getX(0) + "++++" +
 					// event.getX(1));
+
+					midX = ((event.getX(0) + event.getX(1)) / 2 - myView.logicManager.fXOffset)
+							/ myView.logicManager.fScaleRate;
+					midY = ((event.getY(0) + event.getY(1)) / 2 - myView.logicManager.fYOffset)
+							/ myView.logicManager.fScaleRate;
+					myView.logicManager.fstartmidLogicX = midX;
+					myView.logicManager.fstartmidLogicY = midY;
+					// myView.logicManager.onStartZoom();
 					distance = distance(event);
 					TouchMod = TOUCH_MOD_ZOOM;
 					break;
@@ -103,6 +114,12 @@ public class SurfaceViewMain extends Activity {
 								* distance(event) / distance;
 						// myView.onScale(scaleRate);
 						// myView.logicManager.onOverallUpdate();
+						float TouchViewmidX = (event.getX(0) + event.getX(1)) / 2;
+						float TouchViewmidY = (event.getY(0) + event.getY(1)) / 2;
+
+						myView.logicManager.onScaleLocated(midX, midY,
+								TouchViewmidX, TouchViewmidY);
+
 						myView.logicManager.onViewRefresh();
 						distance = distance(event);
 					}
@@ -121,8 +138,14 @@ public class SurfaceViewMain extends Activity {
 						final String clickID = myView
 								.onTouchSetXY(downX, downY);
 						if (null != clickID) {
-							Log.d("Touch", "点到的ID=" + clickID+"\tparentID="+myView.logicManager.getDomainLogic(clickID).getData().getParentID());
-							
+							Log.d("Touch",
+									"点到的ID="
+											+ clickID
+											+ "\tparentID="
+											+ myView.logicManager
+													.getDomainLogic(clickID)
+													.getData().getParentID());
+
 							showGroupNames(clickID, myView);
 						}
 					}
@@ -189,10 +212,19 @@ public class SurfaceViewMain extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						String id = itemlist.get(which).get("id");
+						final String id = itemlist.get(which).get("id");
 						final String key = itemlist.get(which).get("key");
 						runOnUiThread(new Runnable() {
 							public void run() {
+								NodeDomainData data = myView.logicManager
+										.getDomainLogic(id).getData();
+								// 首先设置一个定位后的缩放比例，尽量大一些，让定位点更显眼
+								myView.logicManager.fScaleRate = 8f;
+								myView.logicManager.onScaleLocated(
+										data.getCurX(), data.getCurY(),
+										myView.getWidth() / 2,
+										myView.getHeight() / 2);
+								myView.logicManager.onViewRefresh();
 								Toast.makeText(SurfaceViewMain.this, key,
 										Toast.LENGTH_SHORT).show();
 							}
@@ -305,7 +337,7 @@ public class SurfaceViewMain extends Activity {
 					public boolean onMenuItemClick(MenuItem item) {
 						// TODO Auto-generated method stub
 						Intent intent = new Intent(SurfaceViewMain.this,
-								Viewpager_main.class);
+								ViewpagerActivity.class);
 						startActivity(intent);
 						return false;
 					}

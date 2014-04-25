@@ -11,7 +11,7 @@ public class NodeDomainData {
 	private String ParentID = "-1";//根节点ID为-1
 	private ArrayList<String> ChildIDs;
 	protected Class<?> Obj;
-	private float fCurX = 0;// XY为绘制在视图上的坐标,需要通过下面的
+	private float fCurX = 0;// XY为绘制在逻辑视图上的坐标,需要通过下面的
 	private float fCurY = 0;
 	private float fViewX = 0;// 该点在视图上的坐标
 	private float fViewY = 0;
@@ -134,8 +134,11 @@ public class NodeDomainData {
 		// this.fCurX
 		this.fViewX = (fCurX * logicManager.fScaleRate + logicManager.fXOffset);
 		this.fViewY = (fCurY * logicManager.fScaleRate + logicManager.fYOffset);
+//		this.fViewX = ((fCurX-logicManager.fmidX) * logicManager.fScaleRate + logicManager.fXOffset);
+//		this.fViewY = ((fCurY-logicManager.fmidY) * logicManager.fScaleRate + logicManager.fYOffset);
 		// onLocationChanged(logicManager);
 	}
+	
 
 	public float getRadius() {
 		return fRadius;

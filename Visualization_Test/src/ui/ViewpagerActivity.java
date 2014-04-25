@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
-public class Viewpager_main extends FragmentActivity {
+public class ViewpagerActivity extends FragmentActivity {
 	// 相关参数的设置
 	public static final int PAGE_NUM = 3;
 

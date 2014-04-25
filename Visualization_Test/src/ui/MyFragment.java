@@ -14,6 +14,10 @@ import com.echo.holographlibrary.LinePoint;
 import com.echo.holographlibrary.PieGraph;
 import com.echo.holographlibrary.PieGraph.OnSliceClickedListener;
 import com.echo.holographlibrary.PieSlice;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GraphView.GraphViewData;
+import com.jjoe64.graphview.GraphViewSeries;
+import com.jjoe64.graphview.LineGraphView;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -24,9 +28,15 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -275,74 +285,97 @@ public class MyFragment extends Fragment {
 
 	}
 
+	// graphview的曲线图设置
 	private void SetLine(View view) {
-		final LineGraph lg = (LineGraph) view.findViewById(R.id.graph_postline);
-		Line l = new Line();
-		LinePoint p = new LinePoint();
-		p.setX(0);
-		p.setY(5);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(8);
-		p.setY(8);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(10);
-		p.setY(4);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(4);
-		p.setY(6);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(2);
-		p.setY(7);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(12);
-		p.setY(3);
-		l.addPoint(p);
-		p = new LinePoint();
-		p.setX(14);
-		p.setY(9);
-		l.addPoint(p);
-		l.setColor(Color.parseColor("#FFBB33"));
-		l.setShowingPoints(true);
-		lg.addLine(l);
-		lg.setRangeY(0, 10);
-
-		lg.setUsingDips(true);
-		lg.setLineToFill(0);
-
-		lg.setOnPointClickedListener(new OnPointClickedListener() {
-
-			@Override
-			public void onClick(int lineIndex, int pointIndex) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getActivity(),
-						lg.getLine(lineIndex).getPoint(pointIndex).toString(),
-						Toast.LENGTH_SHORT).show();
-				;
-			}
-		});
-
-		// 说明部分
-		String msg = null;// 相关说明的字符串形式
-		SpannableString msp = null;
-		// 格式设置
-		String strpeak = lg.getLine(0).getPoint(3).toString();
-		msg = "您近期的微博转发高峰在：" + strpeak;
-		msp = new SpannableString(msg);
-		msp.setSpan(new ForegroundColorSpan(Color.parseColor("#AA66CC")), 12,
-				12 + strpeak.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-		msp.setSpan(new RelativeSizeSpan(1.4f), 12, 12 + strpeak.length(),
-				Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-
-		TextView text_dscp_postline = (TextView) view
-				.findViewById(R.id.text_dscp_postline);
-		text_dscp_postline.setText(msp);
-		text_dscp_postline.setTextSize(22);
-
+		// init example series data
+		GraphViewSeries exampleSeries = new GraphViewSeries(
+				new GraphViewData[] { new GraphViewData(1, 2.0d),
+						new GraphViewData(2, 1.5d), new GraphViewData(3, 2.5d),
+						new GraphViewData(4, 1.0d), new GraphViewData(5, 3.5d),
+						new GraphViewData(6, 4.5d), new GraphViewData(7, 2.3d) });
+		final LineGraphView graphView = new LineGraphView(getActivity(), "转发曲线");
+		graphView.addSeries(exampleSeries); // data
+		LinearLayout layout = (LinearLayout) view
+				.findViewById(R.id.linearlayout);
+		graphView.setShowHorizontalLabels(true);
+		graphView.setDrawDataPoints(true);
+		graphView.setScrollable(true);
+		graphView.setScalable(true);
+//		graphView.set
+		graphView.setViewPort(0, 2);
+		// layout.addView(graphView);
+		layout.addView(graphView, 1, new LayoutParams(480, 500));
 	}
+
+	// holograph的曲线图设置
+	// private void SetLine(View view) {
+	// final LineGraph lg = (LineGraph) view.findViewById(R.id.graph_postline);
+	// Line l = new Line();
+	// LinePoint p = new LinePoint();
+	// p.setX(0);
+	// p.setY(5);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(8);
+	// p.setY(8);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(10);
+	// p.setY(4);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(4);
+	// p.setY(6);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(2);
+	// p.setY(7);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(12);
+	// p.setY(3);
+	// l.addPoint(p);
+	// p = new LinePoint();
+	// p.setX(14);
+	// p.setY(9);
+	// l.addPoint(p);
+	// l.setColor(Color.parseColor("#FFBB33"));
+	// l.setShowingPoints(true);
+	// lg.addLine(l);
+	// lg.setRangeY(0, 10);
+	//
+	// lg.setUsingDips(true);
+	// lg.setLineToFill(0);
+	//
+	// lg.setOnPointClickedListener(new OnPointClickedListener() {
+	//
+	// @Override
+	// public void onClick(int lineIndex, int pointIndex) {
+	// // TODO Auto-generated method stub
+	// Toast.makeText(getActivity(),
+	// lg.getLine(lineIndex).getPoint(pointIndex).toString(),
+	// Toast.LENGTH_SHORT).show();
+	// ;
+	// }
+	// });
+
+	// // 说明部分
+	// String msg = null;// 相关说明的字符串形式
+	// SpannableString msp = null;
+	// // 格式设置
+	// String strpeak = lg.getLine(0).getPoint(3).toString();
+	// msg = "您近期的微博转发高峰在：" + strpeak;
+	// msp = new SpannableString(msg);
+	// msp.setSpan(new ForegroundColorSpan(Color.parseColor("#AA66CC")), 12,
+	// 12 + strpeak.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+	// msp.setSpan(new RelativeSizeSpan(1.4f), 12, 12 + strpeak.length(),
+	// Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+	//
+	// TextView text_dscp_postline = (TextView) view
+	// .findViewById(R.id.text_dscp_postline);
+	// text_dscp_postline.setText(msp);
+	// text_dscp_postline.setTextSize(22);
+	//
+	// }
 
 }
