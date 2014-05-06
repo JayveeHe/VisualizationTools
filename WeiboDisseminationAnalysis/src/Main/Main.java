@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import FastForce.FastForceDirected;
 import Utils.FileUtils;
 import Utils.ForceDirectMethod;
 import Utils.GexfUtils;
@@ -79,32 +80,56 @@ public class Main {
 		// Map<String, NodeData> map = WeiboSpreadUtils
 		// .createMapByURL("http://weibo.com/1653689003/B2TVTfImj?ref=home");
 		Map<String, NodeData> map = WeiboSpreadUtils
-				.createMapByURL("http://weibo.com/2100623570/B2L8rERBm?type=repost");
+				.createMapByURL("http://weibo.com/1764222885/B35U2ovTK?type=repost");
 		System.out.println("=========================");
 		// for (NodeData data : map.values()) {
 		// System.out.println(data);
 
 		// }
-		Map<String, InfoNode> info_map = InfoNode.getNodeMapByData(map);
+		Map<String, InfoNode> info_map = InfoNode.getNodeMapByDataMap(map);
 		if (info_map == null) {
 			return;
 		}
-		float entropy = 0;
+
+		// int[] adjacency = PlotUtils
+		// .transFormat(info_map);
+		// int ttt = 0;
+		// for (int i = 0; i < adjacency.length; i++) {
+		// for (int j = 0; j < adjacency.length; j++) {
+		// if (i == adjacency[j])
+		// ttt++;
+		// }
+		// }
+		// System.out.println(adjacency.length+"==========="+ttt);
+		System.out.println("开始布点计算……");
 		double time = System.currentTimeMillis();
-		float temp;
-		for (NodeData data : map.values()) {
-			System.out.println(data);
+		FastForceDirected ffd = new FastForceDirected();
+		double[][] result = ffd.PositionComputeProcess(PlotUtils
+				.transFormat(info_map));
+
+		int count = 0;
+		for (InfoNode node : info_map.values()) {
+			node.setX((float) result[0][count]);
+			node.setY((float) result[1][count]);
+			count++;
 		}
+
+		float entropy = 0;
+		
+		float temp;
+		// for (NodeData data : map.values()) {
+		// System.out.println(data);
+		// }
 		// entropy = PlotUtils.FDA(info_map);
-//		int count = 0;
-//		do {
-//			count++;
-//			temp = entropy;
-//			entropy = PlotUtils.FDA(info_map);
-//			System.out.println("熵值=" + entropy);
-//		} while (Math.abs(entropy) >= 0.1f
-//				&& Math.abs(entropy - temp) >= ForceDirectMethod.k * 0.00001f
-//				&& count < 1000);
+		// int count = 0;
+		// do {
+		// count++;
+		// temp = entropy;
+		// entropy = PlotUtils.FDA(info_map);
+		// System.out.println("熵值=" + entropy);
+		// } while (Math.abs(entropy) >= 0.1f
+		// && Math.abs(entropy - temp) >= ForceDirectMethod.k * 0.00001f
+		// && count < 1000);
 		// }while(entropy>0);
 		// for(InfoNode node: info_map.values())
 		// {
@@ -115,16 +140,18 @@ public class Main {
 		//
 		// }
 		// }
-		for (int i = 0; i < 200; i++) {
-			temp = entropy;
-			entropy = PlotUtils.FDA(info_map);
-			System.out.println("熵值=" + entropy);
-//			if (Math.abs(entropy) <= 0.01f || Math.abs(entropy - temp) < 0.001f)
-//				break;
-		}
-		time = System.currentTimeMillis() - time;
-		System.out.println("用时：" + time);
-		System.out.println("k=" + ForceDirectMethod.k);
-		GexfUtils.createGexf(info_map, WeiboSpreadUtils.show_name + ".gexf");
+//		for (int i = 0; i < 200; i++) {
+//			temp = entropy;
+//			entropy = PlotUtils.FDA(info_map);
+//			System.out.println("熵值=" + entropy);
+//			// if (Math.abs(entropy) <= 0.01f || Math.abs(entropy - temp) <
+//			// 0.001f)
+//			// break;
+//		}
+		 time = System.currentTimeMillis() - time;
+		 System.out.println("用时：" + time);
+		// System.out.println("k=" + ForceDirectMethod.k);
+		GexfUtils.createGexf(info_map, System.currentTimeMillis()
+				+ "-"+ WeiboSpreadUtils.show_name  + ".gexf");
 	}
 }

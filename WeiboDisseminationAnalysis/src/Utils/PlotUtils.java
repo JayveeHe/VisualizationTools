@@ -1,5 +1,8 @@
 package Utils;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import Main.InfoNode;
@@ -12,6 +15,7 @@ public class PlotUtils {
 	 * 
 	 * @param map
 	 * @return 该次力导向后的系统熵
+	 * @author Jayvee
 	 */
 
 	public static float FDA(Map<String, InfoNode> map) {
@@ -46,7 +50,7 @@ public class PlotUtils {
 					// 判断i,j两点是否有关系
 					{
 						AttractiveForce = ForceDirectMethod
-								.F_attractive(distance) * 0.001f;//减缓位移变化量
+								.F_attractive(distance) * 0.001f;// 减缓位移变化量
 						// * (1 + data_j.getChilds_wid().size() * 0.1f);//
 						// 相关节点间引力大小
 						entropy -= AttractiveForce;
@@ -64,10 +68,10 @@ public class PlotUtils {
 							* Math.cos(angle)));
 					data_i.setYdiffer((float) (data_i.getYdiffer() + RepulsiveForce
 							* Math.sin(angle)));
-//					if(AttractiveForce>RepulsiveForce)
-//					{
-//						System.out.println(data_i.getName()+"受到的引力大于斥力");
-//					}else 	System.out.println(data_i.getName()+"受到的引力小于斥力");
+					// if(AttractiveForce>RepulsiveForce)
+					// {
+					// System.out.println(data_i.getName()+"受到的引力大于斥力");
+					// }else System.out.println(data_i.getName()+"受到的引力小于斥力");
 				}
 			}
 			// System.out.println("X变动=" + logic_i.getData().Xdiffer);
@@ -81,7 +85,55 @@ public class PlotUtils {
 			}
 
 		}
-		return entropy/map.size()*100;
+		return entropy / map.size() * 100;
+
+	}
+
+	/**
+	 * 为适应快速力引导算法的格式转换函数
+	 * 
+	 * @param map
+	 * @return
+	 */
+	public static int[][] transFormat(Map<String, InfoNode> map) {
+		int nodeNum = map.size();
+		int[][] edges = new int[nodeNum][nodeNum];
+		List<InfoNode> nodelist = new LinkedList<InfoNode>();// 生成一个有序的list
+		// 创建边关系
+		int count = 0;
+		Map<String, Integer> matchMap = new HashMap<String, Integer>();
+		// matchMap用于实现数组序号的对应关系，其中String存储的是wid，Integer存储数组序号
+		for (InfoNode node : map.values()) {
+			// 按照map的顺序进行list创建
+			matchMap.put(node.getWid(), count);
+			nodelist.add(node);
+			count++;
+		}
+		for (int i = 0; i < nodelist.size(); i++) {
+			InfoNode node = nodelist.get(i);
+			String parent_wid = node.getParent_wid();
+			// if (parent_wid != "-1") {
+			// int j = matchMap.get(parent_wid);
+			// edges[i][j] = 1;
+			// } else if (node.getChilds_wid().size() != 0) {
+			// edges[i] = matchMap.get(node.getChilds_wid().get(0));
+			// }
+			if (node.getChilds_wid().size() != 0) {
+				for (String wid : node.getChilds_wid()) {
+					// 完成该点的子节点配对
+					int j = matchMap.get(wid);
+					edges[i][j] = 1;
+				}
+			}
+			if (parent_wid != "-1") {
+				// 完成母节点的配对，排除了根节点和孤立节点的情况
+				int j = matchMap.get(parent_wid);
+				edges[i][j] = 1;
+			}
+		}
+		// for (Integer i : edges)
+		// System.out.println(i);
+		return edges;
 
 	}
 

@@ -34,7 +34,7 @@ public class InfoNode {
 		Color color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255),
 				r.nextInt(255));
 		this.setColor(color);
-		this.setRadius((float) (50 + 0.001 * this.childs_wid.size()));
+		this.setRadius((float) (3 + 0.01 * this.childs_wid.size()));
 		// System.out.println(this.color);
 	}
 
@@ -44,7 +44,7 @@ public class InfoNode {
 	 * @param map
 	 * @return
 	 */
-	public static Map<String, InfoNode> getNodeMapByData(
+	public static Map<String, InfoNode> getNodeMapByDataMap(
 			Map<String, NodeData> map) {
 		if (null == map || map.size() == 0) {
 			return null;
@@ -83,9 +83,9 @@ public class InfoNode {
 				// node.y = r.nextFloat() + parent.y;
 				int len = r.nextInt(4) - 2;
 				double dAngle = r.nextDouble();
-				node.x = (float) ((r.nextInt(2) - 1) * Math.cos(r.nextDouble()))
+				node.x = (float) ((len) * Math.cos(dAngle))
 						+ parent.x;
-				node.y = (float) ((r.nextInt(2) - 1) * Math.sin(r.nextDouble()))
+				node.y = (float) ((len) * Math.sin(dAngle))
 						+ parent.y;
 			}
 		}

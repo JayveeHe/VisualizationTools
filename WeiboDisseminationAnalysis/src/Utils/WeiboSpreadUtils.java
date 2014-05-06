@@ -30,7 +30,8 @@ public class WeiboSpreadUtils {
 	public static String ACCESS_TOKEN = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
 
 	// private static String show_wid;
-	public  static String show_name;
+	public static String show_name;
+	private static int max_count = 1800;
 
 	/**
 	 * 根据单条微博的url生成相应的转发微博map
@@ -56,11 +57,12 @@ public class WeiboSpreadUtils {
 		JSONObject object_show = (JSONObject) tokener_show.nextValue();
 		String show_text = object_show.getString("text");
 		String show_created_at = object_show.getString("created_at");
+
 		show_name = object_show.getJSONObject("user").getString("screen_name");
 		int show_repost_count = object_show.getInt("reposts_count");
 		System.out.println("转发总数：" + show_repost_count);
-		if (show_repost_count > 1500) {
-			System.out.println("不支持转发数大于1500条的微博分析！");
+		if (show_repost_count > max_count) {
+			System.out.println("不支持转发数大于" + max_count + "条的微博分析！");
 			return null;
 		}
 		String show_uid = object_show.getJSONObject("user").getString("idstr");
@@ -215,6 +217,11 @@ public class WeiboSpreadUtils {
 		System.out.println("无法找到母节点的点个数：" + count);
 	}
 
+	/**
+	 * 统计转发的时间曲线
+	 * 
+	 * @param map
+	 */
 	public void countCurve(Map<String, NodeData> map) {
 		final long time_interval = 5 * 60000;// 统计的时间间隔为5分钟
 		// 首先找到根节点的信息
