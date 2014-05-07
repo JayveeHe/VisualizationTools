@@ -1,9 +1,14 @@
 package Utils;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class WeiboIDUtils {
 
@@ -68,6 +73,30 @@ public class WeiboIDUtils {
 				}
 			}
 			return mid;
+		}
+
+		/**
+		 * 短的url（不包含前缀）转化成mid的值
+		 * 
+		 * @param url
+		 * @return
+		 * @throws IOException
+		 * @throws MalformedURLException
+		 * @throws JSONException
+		 */
+		public static String url2midByAPI(String url)
+				throws MalformedURLException, IOException, JSONException {
+			JSONTokener jsonTokener = new JSONTokener(
+					NetworkUtils
+							.getReq("https://api.weibo.com/2/statuses/queryid.json?"
+									+ "mid="
+									+ url
+									+ "&type=1&isBase62=1"
+									+ "&access_token="
+									+ WeiboSpreadUtils.ACCESS_TOKEN));
+			JSONObject obj = (JSONObject) jsonTokener.nextValue();
+
+			return obj.getString("id");
 		}
 
 		/**
@@ -165,13 +194,25 @@ public class WeiboIDUtils {
 			if (null != result && count == 1) {
 				result = Pattern.compile("/").matcher(result).replaceAll("");
 				System.out.println("解析源：" + result);
-				result = url2mid(result);
-				System.out.println("解析结果："+result);
+				// result = url2mid(result);
+				try {
+					result = url2midByAPI(result);
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("解析结果：" + result);
 			} else
 				System.out.println("输入地址错误");
 			return result;
 		}
-		
+
 		/**
 		 * 完整的单条微博地址转换为uid（该条微博的发布者id）
 		 * 
@@ -189,16 +230,15 @@ public class WeiboIDUtils {
 				result = m.group();
 			}
 			if (null != result && count == 1) {
-//				result = Pattern.compile("/").matcher(result).replaceAll("");
-//				System.out.println("解析源：" + result);
-//				result = url2mid(result);
-				
-				System.out.println("解析结果uid："+result);
+				// result = Pattern.compile("/").matcher(result).replaceAll("");
+				// System.out.println("解析源：" + result);
+				// result = url2mid(result);
+
+				System.out.println("解析结果uid：" + result);
 			} else
 				System.out.println("输入地址错误");
 			return result;
 		}
-		
 
 		// public static void main(String[] args) throws Exception {
 		// String aa = url2mid("zeRxPdQhO");

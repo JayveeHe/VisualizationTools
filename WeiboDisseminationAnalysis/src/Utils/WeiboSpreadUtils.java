@@ -18,38 +18,40 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import Main.InfoNode;
-import Main.NodeData;
+import Main.SpreadNodeData;
 
 public class WeiboSpreadUtils {
 	public static String ACCESS_TOKEN = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
 
 	// private static String show_wid;
 	public static String show_name;
-	private static int max_count = 1800;
+	private static int max_count = 1950;
 
 	/**
 	 * 根据单条微博的url生成相应的转发微博map
 	 * 
 	 * @param url
 	 * @return
-	 * @throws JSONException
-	 * @throws MalformedURLException
-	 * @throws IOException
+	 * @author Jayvee
+	 * @throws Exception
+	 *             所分析的转发微博不应该超过1900条
 	 */
-	public static Map<String, NodeData> createMapByURL(String url)
-			throws JSONException, MalformedURLException, IOException {
-
+	public static Map<String, SpreadNodeData> createMapByURL(String url)
+			throws Exception {
+		// 调用API的地址，GET方式
 		String rptl_URL = "https://api.weibo.com/2/statuses/repost_timeline.json?";
 		String show_URL = "https://api.weibo.com/2/statuses/show.json?";
 
 		String show_wid = WeiboIDUtils.Base62Util.fullUrl2mid(url);
-		Map<String, NodeData> map = new HashMap<String, NodeData>();
+		Map<String, SpreadNodeData> map = new HashMap<String, SpreadNodeData>();
 		String show_resp = NetworkUtils.getReq(show_URL + "access_token="
 				+ ACCESS_TOKEN + "&id=" + show_wid);
 		// //首先获取该条微博的信息
@@ -62,20 +64,27 @@ public class WeiboSpreadUtils {
 		int show_repost_count = object_show.getInt("reposts_count");
 		System.out.println("转发总数：" + show_repost_count);
 		if (show_repost_count > max_count) {
-			System.out.println("不支持转发数大于" + max_count + "条的微博分析！");
-			return null;
+			// System.out.println("不支持转发数大于" + max_count + "条的微博分析！");
+			throw new WeiboSpreadException(
+					WeiboSpreadException.REPOST_COUNT_ERROR);
+		}
+		if (show_repost_count == 0) {
+			// System.out.println("转发数为0！");
+			throw new WeiboSpreadException(
+					WeiboSpreadException.NONE_REPOST_ERROR);
 		}
 		String show_uid = object_show.getJSONObject("user").getString("idstr");
 		boolean isRepost = object_show.optJSONObject("retweeted_status") != null;
 		ArrayList<String> show_repost_link = new ArrayList<String>();
 		show_repost_link.add(show_name);
-		NodeData showData = new NodeData(0, show_name, show_name, show_text,
-				show_wid, show_uid, show_created_at, show_repost_link);
+		SpreadNodeData showData = new SpreadNodeData(0, show_name, show_name,
+				show_text, show_wid, show_uid, show_created_at,
+				show_repost_link, show_repost_count);
 		map.put(show_name + "-0", showData);// 首先在map中加入根节点信息
 		System.out.println(showData.getName() + ":" + showData.getText());
 		// int page = 1;
-		long max_id = 0;
-		int max_page = (int) Math.ceil(show_repost_count / 200f);
+		// long max_id = 0;
+		int max_page = (int) Math.ceil(show_repost_count / 200f);// 向上取整
 		System.out.println(show_repost_count / 200 + "|||max_page=" + max_page);
 		for (int page = 1; page <= max_page; page++) {
 			System.out.println("第" + page + "页读取开始");
@@ -90,8 +99,8 @@ public class WeiboSpreadUtils {
 			// //获取该条微博的转发信息
 			JSONTokener tokener = new JSONTokener(repost_resp);
 			JSONObject object = (JSONObject) tokener.nextValue();
-			System.out.println("max_id=" + max_id);
-			max_id = object.getLong("next_cursor");
+			// System.out.println("max_id=" + max_id);
+			// max_id = object.getLong("next_cursor");
 			JSONArray reposts_list = object.getJSONArray("reposts");
 			for (int i = 0; i < reposts_list.length(); i++) {
 				JSONObject repost = reposts_list.getJSONObject(i);
@@ -104,6 +113,9 @@ public class WeiboSpreadUtils {
 				String temp = repost.getString("text");
 				String text = "";
 				ArrayList<String> repost_link = new ArrayList<String>();
+				String province = repost.getJSONObject("user").getString(
+						"province");
+				int repost_count = repost.getInt("reposts_count");// 该节点的转发总数
 				String parent_name = "";
 				int level;
 				int count = 0;
@@ -122,17 +134,15 @@ public class WeiboSpreadUtils {
 						level = count + 1;// 转发级数
 						text = temp;
 						parent_name = show_name;
-						NodeData nodeData = new NodeData(level, repost_name,
-								parent_name, text, wid, uid, post_time,
-								repost_link);
+						SpreadNodeData nodeData = new SpreadNodeData(level,
+								repost_name, parent_name, text, wid, uid,
+								post_time, repost_link,repost_count);
 						map.put(repost_name + "-" + level, nodeData);
 						continue;
 					}
 				}
 				// 首先判断是否为二次转发（忽略用户自己删除掉@符号的情形）
 				if (Pattern.compile("//@").matcher(temp).find()) {
-					// System.out.println("第" + user_count + "个用户的处理前的微博：" +
-					// temp);
 					// 提取该用户自己添加的内容text
 					Pattern p1 = Pattern
 							.compile("^[^(//@)|^\\s].+?[^\u4e00-\u9fa5]?//@");// 终于凑出的匹配表达式
@@ -175,31 +185,25 @@ public class WeiboSpreadUtils {
 				// 所得结果为正确的
 				repost_link.add(show_name);// 默认的转发链中有指定分析的微博
 				level = count + 1;// 转发级数
-				NodeData nodeData = new NodeData(level, repost_name,
-						parent_name, text, wid, uid, post_time, repost_link);
+				SpreadNodeData nodeData = new SpreadNodeData(level,
+						repost_name, parent_name, text, wid, uid, post_time,
+						repost_link,repost_count);
 				map.put(repost_name + "-" + level, nodeData);
 			}
-			if (page < max_page)
-				max_id = reposts_list.getJSONObject(reposts_list.length() - 1)
-						.getLong("id");
 		}
 		setRelationship(map);
-		// int n = 0;
-		// for (NodeData data : map.values()) {
-		// System.out.println("第" + ((n++) + 1) + "个数据：" + data);
-		// }
 		System.out.println("总共处理了" + map.size() + "个转发微博");
 		return map;
 	}
 
-	private static void setRelationship(Map<String, NodeData> map) {
+	private static void setRelationship(Map<String, SpreadNodeData> map) {
 		int count = 0;
-		for (NodeData data : map.values()) {
+		for (SpreadNodeData data : map.values()) {
 			// 首先获取该节点的母节点wid
 			if (data.getLevel() != 0)
 				try {
-					NodeData parent_data = map.get(data.getParent_name() + "-"
-							+ (data.getLevel() - 1));
+					SpreadNodeData parent_data = map.get(data.getParent_name()
+							+ "-" + (data.getLevel() - 1));
 					data.setParent_wid(parent_data.getWid());
 					if (!parent_data.getChilds_wid().contains(data.getWid())) {
 						parent_data.addChild(data.getWid());
@@ -207,7 +211,7 @@ public class WeiboSpreadUtils {
 				} catch (Exception e) {
 					// TODO: handle exception
 					count++;
-					NodeData parent_data = map.get(show_name + "-0");
+					SpreadNodeData parent_data = map.get(show_name + "-0");
 					data.setParent_wid(parent_data.getWid());
 					if (!parent_data.getChilds_wid().contains(data.getWid())) {
 						parent_data.addChild(data.getWid());
@@ -222,21 +226,43 @@ public class WeiboSpreadUtils {
 	 * 
 	 * @param map
 	 */
-	public void countCurve(Map<String, NodeData> map) {
+	public void countCurve(Map<String, SpreadNodeData> map) {
 		final long time_interval = 5 * 60000;// 统计的时间间隔为5分钟
 		// 首先找到根节点的信息
 		String startTime = map.get(show_name + "-0").getPost_time();
 		List<Long> timelist = new ArrayList<Long>();
-		for (NodeData data : map.values()) {
+		for (SpreadNodeData data : map.values()) {
 			long nodeTime = parseTime(data.getPost_time());
 			timelist.add(nodeTime);
 		}
 	}
 
+	/**
+	 * 由新浪微博返回的字符串形式的时间转换为毫秒形式的时间
+	 * 
+	 * @param time
+	 *            类似“Wed May 07 13:01:00 +0800 2014”格式的时间
+	 * @return
+	 */
 	public static long parseTime(String time) {
 		Date date = new Date(time);
 		// System.out.println(sdf.parse(a));
 		System.out.println(date.getTime());
 		return date.getTime();
+	}
+
+	static class WeiboSpreadException extends Exception {
+		/**
+		 * 自定义的微博传播分析异常
+		 */
+		private static final long serialVersionUID = 5280258533480586329L;
+		public static final String REPOST_COUNT_ERROR = "微博转发数大于限定值！";
+		public static final String NONE_REPOST_ERROR = "微博没有转发数！";
+
+		public WeiboSpreadException(String str) {
+			// TODO Auto-generated constructor stub
+			super(str);
+		}
+
 	}
 }

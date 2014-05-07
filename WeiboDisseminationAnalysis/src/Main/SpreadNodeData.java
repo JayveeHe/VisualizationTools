@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @author Jayvee
  * 
  */
-public class NodeData {
+public class SpreadNodeData {
 
 	int level;// 该节点的转发级数
 	String name;// 该节点的用户名
@@ -18,12 +18,14 @@ public class NodeData {
 	String uid;// 该节点用户的id，唯一
 	private String post_time;// 该节点微博发送的时间
 	ArrayList<String> repost_link;// 转发路径链，最小大小为1
+	private String province;
+	int repost_count;// 该节点的转发总数
 
 	String parent_wid = "-1";// 默认母节点id为-1，作为检测哨兵
 	ArrayList<String> childs_wid = new ArrayList<String>();
 
 	/**
-	 * NodeData的完整构造函数
+	 * {@linkplain SpreadNodeData}的完整构造函数
 	 * 
 	 * @param level
 	 *            该节点的转发级数
@@ -41,11 +43,13 @@ public class NodeData {
 	 *            该节点微博发送的时间
 	 * @param ArrayList
 	 *            <String> repost_link 转发链，最小大小为1
+	 * @param repost_count
+	 *            该节点的转发总数
 	 * @author Jayvee
 	 */
-	public NodeData(int level, String name, String parent_name, String text,
-			String wid, String uid, String post_time,
-			ArrayList<String> repost_link) {
+	public SpreadNodeData(int level, String name, String parent_name,
+			String text, String wid, String uid, String post_time,
+			ArrayList<String> repost_link, int repost_count) {
 		super();
 		this.level = level;
 		this.name = name;
@@ -55,9 +59,10 @@ public class NodeData {
 		this.uid = uid;
 		this.post_time = post_time;
 		this.repost_link = repost_link;
+		this.repost_count = repost_count;
 	}
 
-	public NodeData(String wid) {
+	public SpreadNodeData(String wid) {
 		this.wid = wid;
 	}
 
@@ -116,9 +121,8 @@ public class NodeData {
 	public void setChilds_wid(ArrayList<String> childs_wid) {
 		this.childs_wid = childs_wid;
 	}
-	
-	public void addChild(String child_id)
-	{
+
+	public void addChild(String child_id) {
 		this.childs_wid.add(child_id);
 	}
 
@@ -132,12 +136,20 @@ public class NodeData {
 
 	@Override
 	public String toString() {
-		return "NodeData [level=" + level + ", name=" + name + ", parent_name="
-				+ parent_name + ", text=" + text + ", wid=" + wid + ", uid="
-				+ uid + ", post_time=" + post_time + ", repost_link="
-				+ repost_link + ", parent_wid=" + parent_wid + ", childs_wid="
-				+ childs_wid + "]";
+		return "SpreadNodeData [level=" + level + ", name=" + name
+				+ ", parent_name=" + parent_name + ", text=" + text + ", wid="
+				+ wid + ", uid=" + uid + ", post_time=" + post_time
+				+ ", repost_link=" + repost_link + ", province=" + getProvince()
+				+ ", repost_count=" + repost_count + ", parent_wid="
+				+ parent_wid + ", childs_wid=" + childs_wid + "]";
 	}
 
+	public String getProvince() {
+		return province;
+	}
+
+	public void setProvince(String province) {
+		this.province = province;
+	}
 
 }

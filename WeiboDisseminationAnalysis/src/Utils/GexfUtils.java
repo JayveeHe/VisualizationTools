@@ -39,7 +39,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import Main.InfoNode;
-import Main.NodeData;
+import Main.SpreadNodeData;
+import Utils.PlotUtils.IDrawableNode;
 
 public class GexfUtils {
 	public static void gexfDecoder(String Filename)
@@ -85,7 +86,7 @@ public class GexfUtils {
 		}
 	}
 
-	public static void createGexf(Map<String, InfoNode> map, String output_path) {
+	public static void createGexf(Map<String, IDrawableNode> map, String output_path) {
 		Gexf gexf = new GexfImpl();
 		Calendar date = Calendar.getInstance();
 
@@ -99,44 +100,44 @@ public class GexfUtils {
 		AttributeList attrList = new AttributeListImpl(AttributeClass.NODE);
 		graph.getAttributeLists().add(attrList);
 
-		Attribute attUrl = attrList.createAttribute("0", AttributeType.STRING,
-				"url");
-		Attribute attIndegree = attrList.createAttribute("1",
-				AttributeType.FLOAT, "indegree");
-		Attribute attFrog = attrList.createAttribute("2",
-				AttributeType.BOOLEAN, "frog").setDefaultValue("true");
+		// Attribute attUrl = attrList.createAttribute("0",
+		// AttributeType.STRING,
+		// "url");
+		// Attribute attIndegree = attrList.createAttribute("1",
+		// AttributeType.FLOAT, "indegree");
+		// Attribute attFrog = attrList.createAttribute("2",
+		// AttributeType.BOOLEAN, "frog").setDefaultValue("true");
 
 		// 结点的设置
 		int i = 0;
 		ArrayList<Node> nodelist = new ArrayList<Node>();
 		Map<String, Node> nodemap = new HashMap<String, Node>();
-		for (InfoNode data : map.values()) {
+		for (IDrawableNode data : map.values()) {
 			Node node = graph.createNode(i + "");
-			node.setLabel(data.getName());
+			node.setLabel(data.getLabel());
 			Color color = data.getColor();
 			node.setColor(new ColorImpl(color.getRed(), color.getGreen(), color
 					.getBlue()));
-			node.setPosition(new PositionImpl(data.getX(), data.getY(), 0));
+			node.setPosition(new PositionImpl(data.getComputableX(), data.getComputableY(), 0));
 			node.setSize(data.getRadius());
 			// nodelist.add(node);
-			nodemap.put(data.getWid(), node);
+			nodemap.put(data.getID(), node);
 			i++;
 		}
 		// 边的设置
-		for (InfoNode data : map.values()) {
+		for (IDrawableNode data : map.values()) {
 
 			// data.ge
-			if (data.getChilds_wid().size() != 0)// 即若有子节点
+			if (data.getChildIDs().size() != 0)// 即若有子节点
 			{
-				ArrayList<String> child_wids = data.getChilds_wid();
+				ArrayList<String> child_wids = data.getChildIDs();
 				for (String child_wid : child_wids) {
-					nodemap.get(data.getWid())
+					nodemap.get(data.getID())
 							.connectTo(nodemap.get(child_wid));
 				}
 			}
 		}
-		
-		
+
 		StaxGraphWriter graphWriter = new StaxGraphWriter();
 		File f = new File(output_path);
 		Writer out;
@@ -147,51 +148,6 @@ public class GexfUtils {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 
-		//
-//		Node gephi = graph.createNode("0");
-//		gephi.setLabel("Gephi").setSize(20).getAttributeValues()
-//				.addValue(attUrl, "http://gephi.org")
-//				.addValue(attIndegree, "1");
-//		gephi.getShapeEntity().setNodeShape(NodeShape.DIAMOND)
-//				.setUri("GephiURI");
-//
-//		Node webatlas = graph.createNode("1");
-//		webatlas.setLabel("Webatlas").getAttributeValues()
-//				.addValue(attUrl, "http://webatlas.fr")
-//				.addValue(attIndegree, "2");
-//
-//		Node rtgi = graph.createNode("2");
-//		rtgi.setLabel("RTGI").getAttributeValues()
-//				.addValue(attUrl, "http://rtgi.fr").addValue(attIndegree, "1");
-//
-//		Node blab = graph.createNode("3");
-//		blab.setLabel("BarabasiLab").getAttributeValues()
-//				.addValue(attUrl, "http://barabasilab.com")
-//				.addValue(attIndegree, "1").addValue(attFrog, "false");
-//
-//		gephi.connectTo("0", webatlas);
-//		gephi.connectTo("1", rtgi);
-//		webatlas.connectTo("2", gephi);
-//		rtgi.connectTo("3", webatlas);
-//		gephi.connectTo("4", blab);
-//
-//		StaxGraphWriter graphWriter = new StaxGraphWriter();
-//		File f = new File("static_graph_sample.gexf");
-//		Writer out;
-//		try {
-//			out = new FileWriter(f, false);
-//			graphWriter.writeToStream(gexf, out, "UTF-8");
-//			System.out.println(f.getAbsolutePath());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-	}
-
-	public static void main(String args[]) throws FileNotFoundException {
-		// gexfDecoder("Jayvee_He-2.gexf");
-		createGexf(null, null);
 	}
 }

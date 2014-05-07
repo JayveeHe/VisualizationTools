@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class InfoNode {
+import Utils.PlotUtils.IDrawableNode;
+
+public class InfoNode implements IDrawableNode {
 
 	String name;
 	String wid;
@@ -25,7 +27,7 @@ public class InfoNode {
 
 	public InfoNode(String name, String wid, String parent_wid,
 			ArrayList<String> childs_wid) {
-		super();
+		// super();
 		Random r = new Random(System.currentTimeMillis());
 		this.name = name;
 		this.wid = wid;
@@ -34,63 +36,60 @@ public class InfoNode {
 		Color color = new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255),
 				r.nextInt(255));
 		this.setColor(color);
-		this.setRadius((float) (3 + 0.01 * this.childs_wid.size()));
+		this.setRadius((float) (3 + 0.05 * this.childs_wid.size()));
 		// System.out.println(this.color);
 	}
 
-	/**
-	 * 生成用于制作gexf的map
-	 * 
-	 * @param map
-	 * @return
-	 */
-	public static Map<String, InfoNode> getNodeMapByDataMap(
-			Map<String, NodeData> map) {
-		if (null == map || map.size() == 0) {
-			return null;
-		}
-		Map<String, InfoNode> nodeMap = new HashMap<String, InfoNode>();
-		Random r = new Random(System.currentTimeMillis());
-		for (NodeData data : map.values()) {
-			InfoNode node = new InfoNode(data.getName(), data.getWid(),
-					data.getParent_wid(), data.getChilds_wid());
-			if (data.getParent_wid() != "-1") {
-				int len = r.nextInt(30) - 15;
-				double dAngle = r.nextDouble();
-				node.x = (float) (len * Math.cos(dAngle));
-				node.y = (float) (len * Math.sin(dAngle));
-				// node.x = r.nextFloat() * 100 +
-				// Long.parseLong(data.getWid())%10;
-				// node.y = r.nextFloat() * 100 +
-				// Long.parseLong(data.getWid())%12;
-
-			} else {
-				node.x = 0;
-				node.y = 0;
-			}
-			node.lastX = node.x;
-			node.lastY = node.y;
-			nodeMap.put(node.getWid(), node);
-		}
-		// 设置颜色 ----------此处应该可以优化
-		for (InfoNode node : nodeMap.values()) {
-			if (nodeMap.size() > 1 && node.parent_wid != "-1")// 即为叶子节点
-			{
-				
-				InfoNode parent = nodeMap.get(node.parent_wid);
-				node.setColor(parent.getColor());
-				// node.x = r.nextFloat() + parent.x;
-				// node.y = r.nextFloat() + parent.y;
-				int len = r.nextInt(4) - 2;
-				double dAngle = r.nextDouble();
-				node.x = (float) ((len) * Math.cos(dAngle))
-						+ parent.x;
-				node.y = (float) ((len) * Math.sin(dAngle))
-						+ parent.y;
-			}
-		}
-		return nodeMap;
-	}
+	// /**
+	// * 生成用于制作gexf的map
+	// *
+	// * @param map
+	// * @return
+	// */
+	// public static Map<String, InfoNode> getNodeMapByDataMap(
+	// Map<String, NodeData> map) {
+	// if (null == map || map.size() == 0) {
+	// return null;
+	// }
+	// Map<String, InfoNode> nodeMap = new HashMap<String, InfoNode>();
+	// Random r = new Random(System.currentTimeMillis());
+	// for (NodeData data : map.values()) {
+	// InfoNode node = new InfoNode(data.getName(), data.getWid(),
+	// data.getParent_wid(), data.getChilds_wid());
+	// if (data.getParent_wid() != "-1") {
+	// int len = r.nextInt(30) - 15;
+	// double dAngle = r.nextDouble();
+	// node.x = (float) (len * Math.cos(dAngle));
+	// node.y = (float) (len * Math.sin(dAngle));
+	// // node.x = r.nextFloat() * 100 +
+	// // Long.parseLong(data.getWid())%10;
+	// // node.y = r.nextFloat() * 100 +
+	// // Long.parseLong(data.getWid())%12;
+	//
+	// } else {
+	// node.x = 0;
+	// node.y = 0;
+	// }
+	// node.lastX = node.x;
+	// node.lastY = node.y;
+	// nodeMap.put(node.getWid(), node);
+	// }
+	// // 设置颜色 ----------此处应该可以优化
+	// for (InfoNode node : nodeMap.values()) {
+	// if (nodeMap.size() > 1 && node.parent_wid != "-1"
+	// && node.getChilds_wid().size() == 0)// 即为叶子节点
+	// {
+	//
+	// InfoNode parent = nodeMap.get(node.parent_wid);
+	// node.setColor(parent.getColor());
+	// int len = r.nextInt(4) - 2;
+	// double dAngle = r.nextDouble();
+	// node.x = (float) ((len) * Math.cos(dAngle)) + parent.x;
+	// node.y = (float) ((len) * Math.sin(dAngle)) + parent.y;
+	// }
+	// }
+	// return nodeMap;
+	// }
 
 	/**
 	 * 每次FDA算法结束后回调，进行偏移量的清算
@@ -204,6 +203,48 @@ public class InfoNode {
 				+ parent_wid + ", childs_wid=" + childs_wid + ", x=" + x
 				+ ", y=" + y + ", radius=" + getRadius() + ", color="
 				+ getColor() + "]";
+	}
+
+	// 实现的接口方法
+	@Override
+	public float getComputableX() {
+		return this.x;
+	}
+
+	@Override
+	public float getComputableY() {
+		return this.y;
+	}
+
+	@Override
+	public String getID() {
+		return this.wid;
+	}
+
+	@Override
+	public String getParentID() {
+		return this.parent_wid;
+	}
+
+	@Override
+	public ArrayList<String> getChildIDs() {
+		return this.childs_wid;
+	}
+
+	@Override
+	public void setComputableX(float x) {
+		this.x = x;
+	}
+
+	@Override
+	public void setComputableY(float y) {
+		this.y = y;
+	}
+
+	@Override
+	public String getLabel() {
+		// TODO Auto-generated method stub
+		return this.name;
 	}
 
 }
