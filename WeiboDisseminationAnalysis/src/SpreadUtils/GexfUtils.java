@@ -1,4 +1,4 @@
-package Utils;
+package SpreadUtils;
 
 import it.uniroma1.dis.wiserver.gexf4j.core.EdgeType;
 import it.uniroma1.dis.wiserver.gexf4j.core.Gexf;
@@ -38,11 +38,18 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import Main.InfoNode;
-import Main.SpreadNodeData;
-import Utils.PlotUtils.IDrawableNode;
+import Nodes.InfoNode;
+import Nodes.SpreadNodeData;
+import SpreadUtils.PlotUtils.IDrawableNode;
 
 public class GexfUtils {
+	/**
+	 * 解析gexf文件
+	 * 
+	 * 暂时没用
+	 * @param Filename
+	 * @throws FileNotFoundException
+	 */
 	public static void gexfDecoder(String Filename)
 			throws FileNotFoundException {
 		SAXReader saxReader = new SAXReader();
@@ -86,6 +93,12 @@ public class GexfUtils {
 		}
 	}
 
+	/**
+	 * 根据数据生成gexf文件
+	 * @param map 包含{@link IDrawableNode}接口的map
+	 * @param output_path 输出文件的路径
+	 * @author Jayvee
+	 */
 	public static void createGexf(Map<String, IDrawableNode> map, String output_path) {
 		Gexf gexf = new GexfImpl();
 		Calendar date = Calendar.getInstance();
@@ -99,14 +112,6 @@ public class GexfUtils {
 
 		AttributeList attrList = new AttributeListImpl(AttributeClass.NODE);
 		graph.getAttributeLists().add(attrList);
-
-		// Attribute attUrl = attrList.createAttribute("0",
-		// AttributeType.STRING,
-		// "url");
-		// Attribute attIndegree = attrList.createAttribute("1",
-		// AttributeType.FLOAT, "indegree");
-		// Attribute attFrog = attrList.createAttribute("2",
-		// AttributeType.BOOLEAN, "frog").setDefaultValue("true");
 
 		// 结点的设置
 		int i = 0;
@@ -127,7 +132,6 @@ public class GexfUtils {
 		// 边的设置
 		for (IDrawableNode data : map.values()) {
 
-			// data.ge
 			if (data.getChildIDs().size() != 0)// 即若有子节点
 			{
 				ArrayList<String> child_wids = data.getChildIDs();

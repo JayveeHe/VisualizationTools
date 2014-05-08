@@ -1,4 +1,4 @@
-package Utils;
+package SpreadUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +24,7 @@ public class NetworkUtils {
 		conn.setRequestProperty("user-agent",
 				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
 		conn.setRequestProperty("Method", "GET");
+//		conn.set
 		conn.connect();
 		InputStream is = conn.getInputStream();
 
@@ -32,7 +33,8 @@ public class NetworkUtils {
 		int riLen = -1;
 		while (-1 != (riLen = is.read(rbuffer)))
 			rbaos.write(rbuffer, 0, riLen);
-		final String Ret = new String(rbaos.toByteArray());
+		final String Ret = new String(rbaos.toByteArray(),"utf-8");
+//		new stri
 		return Ret;
 	}
 }

@@ -1,4 +1,4 @@
-package Utils;
+package SpreadUtils;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

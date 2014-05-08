@@ -1,32 +1,23 @@
-package Utils;
+package SpreadUtils;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import Main.InfoNode;
-import Main.SpreadNodeData;
+import FastForce.FastForceDirected;
+import Nodes.SpreadNodeData;
+import SpreadUtils.PlotUtils.IDrawableNode;
+
+import com.google.gson.JsonObject;
 
 public class WeiboSpreadUtils {
 	public static String ACCESS_TOKEN = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
@@ -35,10 +26,62 @@ public class WeiboSpreadUtils {
 	public static String show_name;
 	private static int max_count = 1950;
 
+	private static JsonObject root;// 用于保存整体传播分析的信息
+
+	/**
+	 * 进行单条微博的传播分析
+	 * 
+	 * @param URL
+	 *            该条微博的url地址
+	 * @param filename
+	 *            输出gexf文件的路径及名字
+	 * @param time_interval
+	 *            转发曲线的时间间隔，以分钟为单位
+	 * @return int[]形式的转发曲线坐标
+	 */
+	public static int[] WeiboSpread(String URL, String filename,
+			int time_interval) {
+
+		Map<String, SpreadNodeData> map = null;
+		try {
+			map = WeiboSpreadUtils.createMapByURL(URL);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// 进行转发时间统计
+		int[] curve = WeiboSpreadUtils.countCurve(map, time_interval);
+		for (int i = 0; i < curve.length; i++) {
+			System.out.println("第" + i + "个时间段的转发数=" + curve[i]);
+		}
+		System.out.println("=========================");
+		Map<String, IDrawableNode> info_map = PlotUtils
+				.getInfoMapByDataMap(map);
+		if (info_map == null) {
+			System.out.println("生成InfoMap发生错误！");
+			return null;
+		}
+		System.out.println("开始布点计算……");
+		double time = System.currentTimeMillis();
+		double[][] result = new FastForceDirected()
+				.PositionComputeProcess(PlotUtils.transToFormat(info_map));
+		int count = 0;
+		for (IDrawableNode node : info_map.values()) {
+			node.setComputableX(((float) result[0][count]));
+			node.setComputableY((float) result[1][count]);
+			count++;
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("用时：" + time / 1000 + "秒");
+		GexfUtils.createGexf(info_map, filename);
+		return curve;
+	}
+
 	/**
 	 * 根据单条微博的url生成相应的转发微博map
 	 * 
 	 * @param url
+	 *            单条微博的完整url
 	 * @return
 	 * @author Jayvee
 	 * @throws Exception
@@ -55,18 +98,31 @@ public class WeiboSpreadUtils {
 		String show_resp = NetworkUtils.getReq(show_URL + "access_token="
 				+ ACCESS_TOKEN + "&id=" + show_wid);
 		// //首先获取该条微博的信息
+		// Timeline tl = new Timeline();
+		// tl.client.setToken(ACCESS_TOKEN);
+		// StatusWapper show_resp = tl.getRepostTimeline(show_wid);
+		// show_resp.getStatuses().get(0).get
 		JSONTokener tokener_show = new JSONTokener(show_resp);
 		JSONObject object_show = (JSONObject) tokener_show.nextValue();
 		String show_text = object_show.getString("text");
 		String show_created_at = object_show.getString("created_at");
 
+		root = new JsonObject();
+		root.addProperty("source_text", show_text);
+		root.addProperty("source_name", show_name);
+		// root
+
 		show_name = object_show.getJSONObject("user").getString("screen_name");
 		int show_repost_count = object_show.getInt("reposts_count");
 		System.out.println("转发总数：" + show_repost_count);
+		int max_page = 0;
 		if (show_repost_count > max_count) {
-			// System.out.println("不支持转发数大于" + max_count + "条的微博分析！");
-			throw new WeiboSpreadException(
-					WeiboSpreadException.REPOST_COUNT_ERROR);
+			System.out.println("转发数大于" + max_count + ",可能丢失应有的转发关系！");
+			// throw new WeiboSpreadException(
+			// WeiboSpreadException.REPOST_COUNT_ERROR);
+			max_page = 10;
+		} else {
+			max_page = (int) Math.ceil(show_repost_count / 200f);// 向上取整
 		}
 		if (show_repost_count == 0) {
 			// System.out.println("转发数为0！");
@@ -84,7 +140,6 @@ public class WeiboSpreadUtils {
 		System.out.println(showData.getName() + ":" + showData.getText());
 		// int page = 1;
 		// long max_id = 0;
-		int max_page = (int) Math.ceil(show_repost_count / 200f);// 向上取整
 		System.out.println(show_repost_count / 200 + "|||max_page=" + max_page);
 		for (int page = 1; page <= max_page; page++) {
 			System.out.println("第" + page + "页读取开始");
@@ -136,7 +191,7 @@ public class WeiboSpreadUtils {
 						parent_name = show_name;
 						SpreadNodeData nodeData = new SpreadNodeData(level,
 								repost_name, parent_name, text, wid, uid,
-								post_time, repost_link,repost_count);
+								post_time, repost_link, repost_count);
 						map.put(repost_name + "-" + level, nodeData);
 						continue;
 					}
@@ -187,7 +242,7 @@ public class WeiboSpreadUtils {
 				level = count + 1;// 转发级数
 				SpreadNodeData nodeData = new SpreadNodeData(level,
 						repost_name, parent_name, text, wid, uid, post_time,
-						repost_link,repost_count);
+						repost_link, repost_count);
 				map.put(repost_name + "-" + level, nodeData);
 			}
 		}
@@ -209,8 +264,8 @@ public class WeiboSpreadUtils {
 						parent_data.addChild(data.getWid());
 					}
 				} catch (Exception e) {
-					// TODO: handle exception
 					count++;
+					// 如果没有找到母节点，则将母节点设为根节点
 					SpreadNodeData parent_data = map.get(show_name + "-0");
 					data.setParent_wid(parent_data.getWid());
 					if (!parent_data.getChilds_wid().contains(data.getWid())) {
@@ -225,16 +280,38 @@ public class WeiboSpreadUtils {
 	 * 统计转发的时间曲线
 	 * 
 	 * @param map
+	 * @param interval
+	 *            时间间隔，以分钟计
 	 */
-	public void countCurve(Map<String, SpreadNodeData> map) {
-		final long time_interval = 5 * 60000;// 统计的时间间隔为5分钟
-		// 首先找到根节点的信息
-		String startTime = map.get(show_name + "-0").getPost_time();
+	public static int[] countCurve(Map<String, SpreadNodeData> map, int interval) {
+		// 转发数统计排名
+		ArrayList<SpreadNodeData> arrayCountList = new ArrayList<>(map.values());
+		Collections.sort(arrayCountList,
+				new SpreadNodeData.DescRepostCountComparator());
+		for (int i = 0; i < arrayCountList.size(); i++) {
+			arrayCountList.get(i).repost_rank = i + 1;// 设置转发排名
+		}
+		// 发送时间排序
+		// ArrayList<SpreadNodeData> arrayTimeList = new
+		// ArrayList<>(map.values());
+		Collections.sort(arrayCountList);// 以发送时间进行排序
+		final long time_interval = interval * 60000;// 统计的时间间隔为5分钟
 		List<Long> timelist = new ArrayList<Long>();
-		for (SpreadNodeData data : map.values()) {
+		for (SpreadNodeData data : arrayCountList) {
 			long nodeTime = parseTime(data.getPost_time());
 			timelist.add(nodeTime);
 		}
+		long startTime = timelist.get(0);
+		long endTime = timelist.get(timelist.size() - 1);
+		double temp = Math.ceil((endTime - startTime) / time_interval);
+		int arraylen = (int) Math.ceil((endTime - startTime) / time_interval);
+		int[] countArray = new int[arraylen + 1];
+		for (int i = 0; i < timelist.size(); i++) {
+			int number = (int) (Math.floor((timelist.get(i) - startTime)
+					/ time_interval));
+			countArray[number]++;
+		}
+		return countArray;
 	}
 
 	/**
@@ -242,12 +319,12 @@ public class WeiboSpreadUtils {
 	 * 
 	 * @param time
 	 *            类似“Wed May 07 13:01:00 +0800 2014”格式的时间
-	 * @return
+	 * @return long型的毫秒形式时间
 	 */
 	public static long parseTime(String time) {
 		Date date = new Date(time);
 		// System.out.println(sdf.parse(a));
-		System.out.println(date.getTime());
+		// System.out.println(date.getTime());
 		return date.getTime();
 	}
 

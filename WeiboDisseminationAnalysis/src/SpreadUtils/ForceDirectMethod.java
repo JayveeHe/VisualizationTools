@@ -1,8 +1,8 @@
-package Utils;
+package SpreadUtils;
 
 import java.util.Map;
 
-import Main.InfoNode;
+import Nodes.InfoNode;
 
 public class ForceDirectMethod {
 	int area;

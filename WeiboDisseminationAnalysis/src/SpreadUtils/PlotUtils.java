@@ -1,4 +1,4 @@
-package Utils;
+package SpreadUtils;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Random;
 
 import FastForce.FastForceDirected;
-import Main.InfoNode;
-import Main.SpreadNodeData;
+import Nodes.InfoNode;
+import Nodes.SpreadNodeData;
 
 public class PlotUtils {
 
@@ -153,7 +153,7 @@ public class PlotUtils {
 	 * @param map
 	 * @return 以nodeID为键值，
 	 */
-	public static Map<String, IDrawableNode> getInfoMapByDataMap(
+	public static  Map<String, IDrawableNode> getInfoMapByDataMap(
 			Map<String, SpreadNodeData> map) {
 		if (null == map || map.size() == 0) {
 			return null;

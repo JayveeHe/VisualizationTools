@@ -1,4 +1,4 @@
-package Main;
+package Nodes;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import Utils.PlotUtils.IDrawableNode;
+import SpreadUtils.PlotUtils.IDrawableNode;
 
 public class InfoNode implements IDrawableNode {
 

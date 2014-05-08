@@ -1,14 +1,17 @@
-package Main;
+package Nodes;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+
+import SpreadUtils.WeiboSpreadUtils;
 
 /**
- * 定义用于微博传播分析的基本节点信息类
+ * 定义用于微博传播分析的基本节点信息类， 实现了以发送时间为排序参照值的接口
  * 
  * @author Jayvee
  * 
  */
-public class SpreadNodeData {
+public class SpreadNodeData implements Comparable<SpreadNodeData> {
 
 	int level;// 该节点的转发级数
 	String name;// 该节点的用户名
@@ -19,7 +22,9 @@ public class SpreadNodeData {
 	private String post_time;// 该节点微博发送的时间
 	ArrayList<String> repost_link;// 转发路径链，最小大小为1
 	private String province;
-	int repost_count;// 该节点的转发总数
+	private int repost_count;// 该节点的转发总数
+
+	public int repost_rank;// 该节点转发数的排名
 
 	String parent_wid = "-1";// 默认母节点id为-1，作为检测哨兵
 	ArrayList<String> childs_wid = new ArrayList<String>();
@@ -59,7 +64,7 @@ public class SpreadNodeData {
 		this.uid = uid;
 		this.post_time = post_time;
 		this.repost_link = repost_link;
-		this.repost_count = repost_count;
+		this.setRepost_count(repost_count);
 	}
 
 	public SpreadNodeData(String wid) {
@@ -139,9 +144,10 @@ public class SpreadNodeData {
 		return "SpreadNodeData [level=" + level + ", name=" + name
 				+ ", parent_name=" + parent_name + ", text=" + text + ", wid="
 				+ wid + ", uid=" + uid + ", post_time=" + post_time
-				+ ", repost_link=" + repost_link + ", province=" + getProvince()
-				+ ", repost_count=" + repost_count + ", parent_wid="
-				+ parent_wid + ", childs_wid=" + childs_wid + "]";
+				+ ", repost_link=" + repost_link + ", province="
+				+ getProvince() + ", repost_count=" + getRepost_count()
+				+ ", parent_wid=" + parent_wid + ", childs_wid=" + childs_wid
+				+ "]";
 	}
 
 	public String getProvince() {
@@ -152,4 +158,35 @@ public class SpreadNodeData {
 		this.province = province;
 	}
 
+	public int getRepost_count() {
+		return repost_count;
+	}
+
+	public void setRepost_count(int repost_count) {
+		this.repost_count = repost_count;
+	}
+
+	@Override
+	public int compareTo(SpreadNodeData o) {
+		// TODO Auto-generated method stub
+		long time = WeiboSpreadUtils.parseTime(this.post_time);
+		return (int) (time - WeiboSpreadUtils.parseTime(o.post_time));// 以发送时间升序排序
+	}
+
+	/**
+	 * 以微博转发量为依据的降序比较器
+	 * 
+	 * @author Jayvee
+	 * 
+	 */
+	public static class DescRepostCountComparator implements
+			Comparator<SpreadNodeData> {
+
+		@Override
+		public int compare(SpreadNodeData o1, SpreadNodeData o2) {
+			// TODO Auto-generated method stub
+			return o2.getRepost_count() - o1.getRepost_count();
+		}
+
+	}
 }
