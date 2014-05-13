@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bkg_spread" >
+
+    <TextView
+        android:id="@+id/text_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="微博传播分析"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FFA500"
+        android:textSize="38sp" />
+
+    <EditText
+        android:id="@+id/et_weiboUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_rank"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="146dp"
+        android:ems="10"
+        android:hint="输入待分析的微博地址" />
+
+    <Button
+        android:id="@+id/btn_startAnalysis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_weiboUrl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="11dp"
+        android:text="开始分析" />
+
+</RelativeLayout>

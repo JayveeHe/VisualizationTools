@@ -2,12 +2,12 @@ package WeiboDomain;
 
 import java.util.ArrayList;
 
-import surfaceview_test.LogicManager;
-import JsonUtils.WeiboData;
+import surfaceview_Main.LogicManager;
+import JsonUtils.WeiboNodeData;
 import NodeDomain.NodeDomainData;
 
 public class WeiboDomainData extends NodeDomainData {
-	private WeiboData weiboData;
+	private WeiboNodeData weiboData;
 
 	public WeiboDomainData(String ID, String ParentID, ArrayList<String> ChildIDs,
 			LogicManager logicManager) {
@@ -15,11 +15,11 @@ public class WeiboDomainData extends NodeDomainData {
 		// TODO Auto-generated constructor stub
 	}
 
-	public WeiboData getWeiboData() {
+	public WeiboNodeData getWeiboData() {
 		return weiboData;
 	}
 
-	public void setWeiboData(WeiboData weiboData) {
+	public void setWeiboData(WeiboNodeData weiboData) {
 		this.weiboData = weiboData;
 	}
 

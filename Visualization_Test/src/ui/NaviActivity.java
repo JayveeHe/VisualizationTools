@@ -35,15 +35,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import jayvee.visualization_test.R;
+import surfaceview_Main.SurfaceViewMain;
+import surfaceview_Demo.*;
+import jayvee.visualization_weibo.R;
 import Utils.FileUtils;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class NaviActivity extends Activity {
@@ -57,47 +66,37 @@ public class NaviActivity extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_navi);
+
 		Button btn_weblist = (Button) findViewById(R.id.btn_weblist);
 		Button btn_locallist = (Button) findViewById(R.id.btn_locallist);
-//		Button btn_test = (Button) findViewById(R.id.btn_test);
-//		btn_test.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View arg0) {
-//				// TODO Auto-generated method stub
-//				new Thread(new Runnable() {
-//					public void run() {
-//						try {
-//							// String cachePath =
-//							// getExternalCacheDir().getPath();
-//							// FileUtils
-//							// .byte2File(test(), cachePath, "wujun.gexf");
-//							// runOnUiThread(new Runnable() {
-//							// public void run() {
-//							// Toast.makeText(NaviActivity.this,
-//							// "文件下载完成！请到本地文件列表查看",
-//							// Toast.LENGTH_LONG).show();
-//							// }
-//							// });
-//							test();
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//
-//					}
-//				}).start();
-//			}
-//		});
+		Button btn_forcedemo = (Button) findViewById(R.id.btn_ForceDemo);
+		Button btn_spread = (Button) findViewById(R.id.btn_spread);
+
+		btn_spread.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(NaviActivity.this,
+						SpreadNaviActivity.class);
+				startActivity(intent);
+			}
+		});
+
+		btn_forcedemo.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(NaviActivity.this,
+						SurfaceViewDemo.class);
+				startActivity(intent);
+			}
+		});
 
 		btn_weblist.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 
-				// dialog.setCancelable(false);
-				// dialog.setCanceledOnTouchOutside(false);
 				final ProgressDialog dialog = ProgressDialog.show(
 						NaviActivity.this, "正在读取列表", "请等待……");
 				dialog.setCancelable(true);
@@ -107,8 +106,6 @@ public class NaviActivity extends Activity {
 						try {
 							String list = getWeblist(new URL(labURL
 									+ "/MicroBlogDisplay/namelist.do"));
-							// String list = getWeblist(new URL(localURL
-							// + "/Android/GexfServlet/getGexf"));
 							if (null != list) {
 								// 将从服务器获取的文件列表以json格式的string传送到下一个activity
 								Bundle bundle = new Bundle();
@@ -125,10 +122,8 @@ public class NaviActivity extends Activity {
 								startActivity(intent);
 							}
 						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 							runOnUiThread(new Runnable() {
 								public void run() {
@@ -139,7 +134,6 @@ public class NaviActivity extends Activity {
 								}
 							});
 						} catch (URISyntaxException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -152,7 +146,6 @@ public class NaviActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				String list = getLocallist();
 				Bundle bundle = new Bundle();
 				Intent intent = new Intent(NaviActivity.this,
@@ -163,6 +156,37 @@ public class NaviActivity extends Activity {
 				startActivity(intent);
 			}
 		});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		getMenuInflater().inflate(R.menu.menu_readme, menu);
+		menu.getItem(0).setOnMenuItemClickListener(
+				new OnMenuItemClickListener() {
+
+					@Override
+					public boolean onMenuItemClick(MenuItem arg0) {
+						AlertDialog.Builder readmeBuilder = new Builder(
+								NaviActivity.this);
+						TextView title = new TextView(NaviActivity.this);
+						title.setGravity(Gravity.CENTER_HORIZONTAL);
+						title.setText("关于本软件");
+						title.setTextSize(30);
+						readmeBuilder.setCustomTitle(title);
+						View view = View.inflate(NaviActivity.this,
+								R.layout.layout_readme, null);
+						TextView text_readme = (TextView) view
+								.findViewById(R.id.text_readme);
+						text_readme
+								.setText("\t\t本客户端由ITTC数据挖掘团队出品,如有疑问可联系作者。\n\n地址：北邮新科研楼706\n邮件：jayveehe@gmail.com");
+						readmeBuilder.setView(view);
+						readmeBuilder.setNeutralButton("返回", null);
+						readmeBuilder.create().show();
+						return false;
+					}
+				});
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	/**
@@ -178,11 +202,6 @@ public class NaviActivity extends Activity {
 	private String getWeblist(URL url) throws IOException, URISyntaxException {
 		// final HttpPost httpPost = new HttpPost(url.toURI());
 		final HttpGet httpGet = new HttpGet(url.toURI());
-		// List<NameValuePair> paramsdata = new ArrayList<NameValuePair>();
-		// paramsdata.add(new BasicNameValuePair("weiboName", "吴军"));
-		// paramsdata.add(new BasicNameValuePair("isAndroid", "true"));
-		// paramsdata.add(new BasicNameValuePair("req_type", "0"));
-		// httpPost.setEntity(new UrlEncodedFormEntity(paramsdata, HTTP.UTF_8));
 		InputStream is = null;
 		try {
 			HttpResponse response = null;
@@ -220,10 +239,12 @@ public class NaviActivity extends Activity {
 		for (File f : file.listFiles()) {
 			JSONObject object = new JSONObject();
 			try {
-				object.put("filename", f.getName());
-				object.put("filesize", f.length() / 1024 + "KB");
-				object.put("filepath", f.getPath());
-				array.put(object);
+				if (f.isFile()) {
+					object.put("filename", f.getName());
+					object.put("filesize", f.length() / 1024 + "KB");
+					object.put("filepath", f.getPath());
+					array.put(object);
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -232,86 +253,4 @@ public class NaviActivity extends Activity {
 		return array.toString();
 	}
 
-	private byte[] test() throws IOException {
-		// HttpPost httpPost = new HttpPost(
-		// "http://10.108.192.119:8080/MicroBlogDisplay/download.do");
-		String weiboName = "吴军";
-		weiboName = URLEncoder.encode(weiboName, "utf-8");
-		// HttpGet httpGet = new HttpGet(
-		// "http://10.108.192.119:8080/MicroBlogDisplay/download.do?weiboName="
-		// + weiboName);
-		String str = "http://10.202.10.176:8080/Android/GexfServlet/getGexf";
-		HttpGet httpGet = new HttpGet(
-				"http://getgexf.nat123.net/Android/GexfServlet/getGexf");
-		// HttpGet httpGet = new HttpGet(
-		// "http://getgexf.nat123.net/Android/GexfServlet/getGexf?weiboName=无菌"
-		// );
-		// HttpGet httpGet = new HttpGet(
-		// "http://10.108.200.186:8080/MicroBlogDisplay/download.do");
-		// HttpPost httpPost = new HttpPost(
-		// "http://10.108.192.119:8080/MicroBlogDisplay/pull.do");
-		// List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("weiboName", "吴军"));
-		// httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-		// httpGet.getParams().setParameter("weiboName", "吴军");
-
-		// URL url = new URL(labURL + "/MicroBlogDisplay/download.do");
-		URL url = new URL(
-				"http://getgexf.nat123.net/Android/GexfServlet/getGexf");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
-		String urlParameters = "weiboName=adfasdfasdf";
-		conn.setRequestProperty("Content-Length", "" + 
-	               Integer.toString(urlParameters.getBytes().length));
-		conn.setRequestMethod("GET");
-		conn.setReadTimeout(5000);
-		conn.setDoOutput(true);
-		OutputStream os = conn.getOutputStream();
-//		os.write(urlParameters.getBytes());
-		DataOutputStream out = new DataOutputStream(os);
-		out.writeBytes(urlParameters);
-		
-//		os.flush();
-//		 out.print("weiboName=吴军");
-		// os.
-		// // conn.set
-		// params.setParameter("weiboName", "吴军");
-//		HttpClient client = new DefaultHttpClient();
-//		HttpParams params = client.getParams();
-//		params.setParameter("weiboName", "吴军");
-//		httpGet.setParams(params);
-		// conn.ge
-		// InputStream is = conn.getInputStream();
-		// List<NameValuePair> params = new ArrayList<NameValuePair>();
-		// params.add(new BasicNameValuePair("weiboName", "吴军"));
-
-		InputStream is = null;
-		try {
-			HttpResponse response = null;
-			// response = new DefaultHttpClient().execute(httpPost);
-//			response = client.execute(httpGet);
-			// if (response.getStatusLine().getStatusCode() == 200) {
-//			is = response.getEntity().getContent();
-			is=conn.getInputStream();
-			// response.getEntity().
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[128];
-			int iLen = -1;
-			while (-1 != (iLen = is.read(buffer)))
-				baos.write(buffer, 0, iLen);
-			final String strRet = new String(baos.toByteArray());
-			System.out.println("获取服务器返回数据：" + strRet);
-			return strRet.getBytes();
-			// }
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-
-	}
 }

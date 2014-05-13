@@ -14,7 +14,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import JsonUtils.WeiboData;
+import JsonUtils.WeiboNodeData;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.provider.OpenableColumns;
@@ -32,12 +32,12 @@ public class GexfUtils {
 	 * @return
 	 * @author Jayvee
 	 */
-	public static Map<String, WeiboData> gexfDecoder(Resources res,
+	public static Map<String, WeiboNodeData> gexfDecoder(Resources res,
 			String Filename) {
 
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
-		Map<String, WeiboData> map = new HashMap<String, WeiboData>();
+		Map<String, WeiboNodeData> map = new HashMap<String, WeiboNodeData>();
 		try {
 			InputStream inpt_strm = res.getAssets().open(Filename);
 			document = saxReader.read(inpt_strm);
@@ -84,7 +84,7 @@ public class GexfUtils {
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
 			System.out.println(label);
-			WeiboData weibodata = new WeiboData(x, y, 0, label, id, color_int,
+			WeiboNodeData weibodata = new WeiboNodeData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
 		}
@@ -93,8 +93,8 @@ public class GexfUtils {
 			Element edge = edges.get(i);
 			String source_id = edge.attribute("source").getText();
 			String target_id = edge.attribute("target").getText();
-			WeiboData source = map.get(source_id);
-			WeiboData target = map.get(target_id);
+			WeiboNodeData source = map.get(source_id);
+			WeiboNodeData target = map.get(target_id);
 			if (source.parent == null)// 即还没有找到母节点
 			{
 				source.parent = target;
@@ -114,11 +114,11 @@ public class GexfUtils {
 	 * @return 符合view需求的map
 	 * @author Jayvee
 	 */
-	public static Map<String, WeiboData> gexfDecoder(File file) {
+	public static Map<String, WeiboNodeData> gexfDecoder(File file) {
 
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
-		Map<String, WeiboData> map = new HashMap<String, WeiboData>();
+		Map<String, WeiboNodeData> map = new HashMap<String, WeiboNodeData>();
 		try {
 //			 InputStream inpt_strm = ;
 			document = saxReader.read(file);
@@ -162,7 +162,7 @@ public class GexfUtils {
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
 //			System.out.println(label);
-			WeiboData weibodata = new WeiboData(x, y, 0, label, id, color_int,
+			WeiboNodeData weibodata = new WeiboNodeData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
 		}
@@ -171,8 +171,8 @@ public class GexfUtils {
 			Element edge = edges.get(i);
 			String source_id = edge.attribute("source").getText();
 			String target_id = edge.attribute("target").getText();
-			WeiboData source = map.get(source_id);
-			WeiboData target = map.get(target_id);
+			WeiboNodeData source = map.get(source_id);
+			WeiboNodeData target = map.get(target_id);
 			if (source.parent == null)// 即还没有找到母节点
 			{
 				source.parent = target;
@@ -190,11 +190,11 @@ public class GexfUtils {
 	 * @param inpt_strm
 	 * @return
 	 */
-	public static Map<String, WeiboData> gexfDecoder(InputStream inpt_strm) {
+	public static Map<String, WeiboNodeData> gexfDecoder(InputStream inpt_strm) {
 
 		SAXReader saxReader = new SAXReader();
 		Document document = null;
-		Map<String, WeiboData> map = new HashMap<String, WeiboData>();
+		Map<String, WeiboNodeData> map = new HashMap<String, WeiboNodeData>();
 		try {
 			document = saxReader.read(inpt_strm);
 		} catch (DocumentException e) {
@@ -237,7 +237,7 @@ public class GexfUtils {
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
 			System.out.println(label);
-			WeiboData weibodata = new WeiboData(x, y, 0, label, id, color_int,
+			WeiboNodeData weibodata = new WeiboNodeData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
 		}
@@ -246,8 +246,8 @@ public class GexfUtils {
 			Element edge = edges.get(i);
 			String source_id = edge.attribute("source").getText();
 			String target_id = edge.attribute("target").getText();
-			WeiboData source = map.get(source_id);
-			WeiboData target = map.get(target_id);
+			WeiboNodeData source = map.get(source_id);
+			WeiboNodeData target = map.get(target_id);
 			if (source.parent == null)// 即还没有找到母节点
 			{
 				source.parent = target;

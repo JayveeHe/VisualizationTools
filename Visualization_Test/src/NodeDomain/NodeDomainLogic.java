@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import surfaceview_test.LogicManager;
-import JsonUtils.WeiboData;
+import surfaceview_Main.LogicManager;
+import JsonUtils.WeiboNodeData;
+import SpreadUtils.PlotUtils.IDrawableNode;
 import android.util.Log;
 
 public class NodeDomainLogic {
@@ -27,7 +28,7 @@ public class NodeDomainLogic {
 		this.setAtomNode(isAtomNode);
 		if (null != getData() && null != getView()) {
 			Log.d(DEBUG_TAG, "领域对象" + ID + "创建完成!");
-//			Log.d(DEBUG_TAG, this.toString());
+			// Log.d(DEBUG_TAG, this.toString());
 		} else
 			Log.e(DEBUG_TAG, "领域对象创建失败!检查data与view是否为空");
 
@@ -47,27 +48,27 @@ public class NodeDomainLogic {
 		return new NodeDomainLogic(data.getID(), view, data, isAtom);
 	}
 
-//	/**
-//	 * 根据list创建相应的逻辑list
-//	 * 
-//	 * @param arrayList
-//	 * @param logicManager
-//	 * @return
-//	 */
-//	public static ArrayList<NodeDomainLogic> creatDomainLogicByList(
-//			ArrayList<WeiboData> arrayList, LogicManager logicManager) {
-//		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
-//		for (int i = 0; i < arrayList.size(); i++) {
-//			WeiboData weibodata = arrayList.get(i);
-//			NodeDomainData data = new NodeDomainData(i, 0, null, logicManager);
-//			data.onRefresh(weibodata.X * 20, weibodata.Y * 20, 5f, 0, 0);
-//			data.group = weibodata.Group;
-//			NodeDomainView view = new NodeDomainView(data);
-//			list.add(new NodeDomainLogic(i, view, data, true));
-//		}
-//		return list;
-//
-//	}
+	// /**
+	// * 根据list创建相应的逻辑list
+	// *
+	// * @param arrayList
+	// * @param logicManager
+	// * @return
+	// */
+	// public static ArrayList<NodeDomainLogic> creatDomainLogicByList(
+	// ArrayList<WeiboData> arrayList, LogicManager logicManager) {
+	// ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
+	// for (int i = 0; i < arrayList.size(); i++) {
+	// WeiboData weibodata = arrayList.get(i);
+	// NodeDomainData data = new NodeDomainData(i, 0, null, logicManager);
+	// data.onRefresh(weibodata.X * 20, weibodata.Y * 20, 5f, 0, 0);
+	// data.group = weibodata.Group;
+	// NodeDomainView view = new NodeDomainView(data);
+	// list.add(new NodeDomainLogic(i, view, data, true));
+	// }
+	// return list;
+	//
+	// }
 
 	/**
 	 * 根据包含weibodata的map创建一个包含所有map中logic的arraylist
@@ -77,9 +78,9 @@ public class NodeDomainLogic {
 	 * @return
 	 */
 	public static ArrayList<NodeDomainLogic> creatDomainLogicByMap(
-			Map<?, WeiboData> map, LogicManager logicManager) {
+			Map<?, WeiboNodeData> map, LogicManager logicManager) {
 		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
-		for (WeiboData weibodata : map.values()) {
+		for (WeiboNodeData weibodata : map.values()) {
 			ArrayList<String> childIDs = new ArrayList<String>();
 			for (int i = 0; i < weibodata.childs.size(); i++) {
 				childIDs.add(weibodata.childs.get(i).ID);
@@ -92,8 +93,7 @@ public class NodeDomainLogic {
 				data = new NodeDomainData(weibodata.ID, childIDs, logicManager);
 			}
 			if (weibodata.size != 0) {
-				data.onRefresh(weibodata.X , weibodata.Y ,
-						weibodata.size, 0, 0);
+				data.onRefresh(weibodata.X, weibodata.Y, weibodata.size, 0, 0);
 			} else {
 				data.onRefresh(weibodata.X * 20, weibodata.Y * 20, 4f, 0, 0);
 			}
@@ -102,6 +102,46 @@ public class NodeDomainLogic {
 			data.color = weibodata.color;
 			NodeDomainView view = new NodeDomainView(data);
 			list.add(new NodeDomainLogic(weibodata.ID, view, data, true));
+		}
+		return list;
+
+	}
+
+	/**
+	 * 根据包含weibodata的map创建一个包含所有map中logic的arraylist
+	 * 
+	 * @param map
+	 * @param logicManager
+	 * @return
+	 */
+	public static ArrayList<NodeDomainLogic> creatDomainLogicByInfoMap(
+			Map<?, IDrawableNode> map, LogicManager logicManager) {
+		ArrayList<NodeDomainLogic> list = new ArrayList<NodeDomainLogic>();
+		for (IDrawableNode weibodata : map.values()) {
+			ArrayList<String> childIDs = weibodata.getChildIDs();
+			// for (int i = 0; i < weibodata.getChildIDs().size(); i++) {
+			// childIDs.add(weibodata.childs.get(i).ID);
+			// }
+			NodeDomainData data;
+			if (weibodata.getParentID() != "-1") {
+				data = new NodeDomainData(weibodata.getID(),
+						weibodata.getParentID(), childIDs, logicManager);
+			} else {
+				data = new NodeDomainData(weibodata.getID(), childIDs,
+						logicManager);
+			}
+			if (weibodata.getRadius() != 0) {
+				data.onRefresh(weibodata.getComputableX(),
+						weibodata.getComputableY(), weibodata.getRadius(), 0, 0);
+			} else {
+				data.onRefresh(weibodata.getComputableX() * 20,
+						weibodata.getComputableY() * 20, 4f, 0, 0);
+			}
+			// data.group = weibodata.Group;
+			data.key = weibodata.getLabel();
+			data.color = weibodata.getColor();
+			NodeDomainView view = new NodeDomainView(data);
+			list.add(new NodeDomainLogic(weibodata.getID(), view, data, true));
 		}
 		return list;
 

@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import jayvee.visualization_test.R;
+import jayvee.visualization_weibo.R;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -34,15 +34,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import surfaceview_test.SurfaceViewMain;
+import surfaceview_Main.SurfaceViewMain;
+import SQLiteUtils.DBhelper;
 import Utils.FileUtils;
 import Utils.ListData;
+import Utils.NetworkUtils;
 import android.app.Activity;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -63,6 +67,9 @@ public class ListActivity extends Activity {
 	private ArrayList<ListData> listDatas;
 	private MyListAdapter myListAdapter = null;
 	private ListView listView;
+	private final String access_token = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
+
+	private SQLiteDatabase db;// SQLite数据库实例
 
 	private boolean isLocal = false;
 
@@ -88,9 +95,9 @@ public class ListActivity extends Activity {
 			listDatas = JsonweblistDecoder(strlist);
 		}
 		myListAdapter = new MyListAdapter();
-		// listView = (ListView) findViewById(R.id.listview);
 		listView.setAdapter(myListAdapter);
 		listView.setOnItemClickListener(myItemClickListener);
+
 	}
 
 	private OnItemClickListener myItemClickListener = new OnItemClickListener() {
@@ -109,42 +116,121 @@ public class ListActivity extends Activity {
 				Bundle bundle = new Bundle();
 				System.out.println(data.getFilepath());
 				bundle.putString("filepath", data.getFilepath());
+				bundle.putString("filename", data.getFilename());
+				bundle.putBoolean("isSpread", false);
+				bundle.putString("source", "list");
 				intent.putExtras(bundle);
 				startActivity(intent);
 			} else {
 				final String filename = data.getFilename();
 				final ProgressDialog dialog = ProgressDialog.show(
-						ListActivity.this, "正在下载！", "请等待");
+						ListActivity.this, "正在下载……", "请等待");
 				dialog.setCancelable(true);
 				dialog.setCanceledOnTouchOutside(false);
 				new Thread(new Runnable() {
+					private String pull_resp;
+
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
 						try {
 							// post方式获取下载文件
 							String weiboName = filename;
-							// String weiboName = null;
-							// try {
-							// weiboName = URLEncoder
-							// .encode(filename, "utf-8");
-							// } catch (UnsupportedEncodingException e1) {
-							// // TODO Auto-generated catch block
-							// e1.printStackTrace();
-							// }
-							// URL url = new URL(NaviActivity.labURL
-							// + "/MicroBlogDisplay/download.do"
-							// + "?weiboName=" + weiboName);
 							URL url = new URL(NaviActivity.labURL
 									+ "/MicroBlogDisplay/download.do");
-							List<NameValuePair> params = new ArrayList<NameValuePair>();
+							final List<NameValuePair> params = new ArrayList<NameValuePair>();
 							params.add(new BasicNameValuePair("weiboName",
 									weiboName));
 							String cachePath = getExternalCacheDir().getPath();
-							byte[] filebytes = post2server(url.toString(), params).getBytes();
-//							FileUtils.byte2File(get2server(url.toString())
-//									.getBytes(), cachePath, filename + ".gexf");
-							FileUtils.byte2File(filebytes, cachePath, filename + ".gexf");
+							byte[] filebytes = NetworkUtils.post2server(
+									url.toString(), params).getBytes();
+							FileUtils.byte2File(filebytes, cachePath, filename
+									+ ".gexf");
+
+							// 下载文件完毕后，获取该用户的相关参数
+
+
+							pull_resp = NetworkUtils
+									.post2server(
+											"http://10.108.192.119:8080/MicroBlogDisplay/androidpull.do",
+											params);
+							System.out.println(pull_resp);
+							JSONTokener tokener = new JSONTokener(pull_resp);
+							JSONObject root = (JSONObject) ((JSONArray) tokener
+									.nextValue()).get(0);
+							String userID = root.getString("userID");
+							int Vtexin = root.getInt("Vtexin");
+							int Vtexout = root.getInt("Vtexout");
+							double ClusterCoefficient = root
+									.getDouble("ClusterCoefficient");
+							double truefollRatio = root
+									.getDouble("truefollRatio");
+							double BilateralRatio = root
+									.getDouble("BilateralRatio");
+							int woman = root.getInt("woman");
+							int man = root.getInt("man");
+							JSONArray province = (JSONArray) new JSONTokener(root.getString("province")).nextValue();
+							
+							
+							JSONObject user_data = new JSONObject();
+							user_data.put("userID", userID);
+							user_data.put("userName", weiboName);
+							user_data.put("Vtexin", Vtexin);
+							user_data.put("Vtexout", Vtexout);
+							user_data.put("woman", woman);
+							user_data.put("man", man);
+							user_data.put("ClusterCoefficient",
+									ClusterCoefficient);
+							user_data.put("truefollRatio", truefollRatio);
+							user_data.put("BilateralRatio", BilateralRatio);
+							user_data.put("province", province);
+
+
+							// 根据uid获取最近转发的微博
+							final String recentweibolistURL = "http://10.108.192.119:8080/MicroBlogDisplay/recentweibolist.do?";
+							String recentweibolist = NetworkUtils
+									.get2Server(recentweibolistURL + "uid="
+											+ userID);
+							// userValues.put("recentweibolist",
+							// recentweibolist);
+							// db.insert("user_data", null, userValues);
+							System.out.println("recentweibolist="
+									+ recentweibolist);
+							// 根据wid获取某条微博的转发曲线
+							tokener = new JSONTokener(recentweibolist);
+							JSONArray array = (JSONArray) tokener.nextValue();
+							JSONArray recentWeibo = new JSONArray();
+							for (int i = 0; i < array.length(); i++) {
+								JSONObject object = (JSONObject) array.get(i);
+								long wid = object.getLong("ID");
+								String text = object.getString("Text");
+								boolean Retweeted = object
+										.getBoolean("Retweeted");
+								JSONObject WeiboDetails = new JSONObject();
+								WeiboDetails.put("wid", wid);
+								WeiboDetails.put("Text", text);
+								WeiboDetails.put("Retweeted", Retweeted);
+
+								String weibocurveURL = "http://10.108.192.119:8080/MicroBlogDisplay/weibocurve.do?";
+								String STR_weibocurve = NetworkUtils
+										.get2Server(weibocurveURL + "wid="
+												+ wid);
+								JSONArray repost_timeline = (JSONArray) new JSONTokener(
+										STR_weibocurve).nextValue();
+								WeiboDetails.put("repost_timeline",
+										repost_timeline);
+								recentWeibo.put(WeiboDetails);
+							}
+							user_data.put("recentWeibo", recentWeibo);
+							File file = new File(getExternalCacheDir() + File.separator
+											+ "datas"+ File.separator);
+							file.mkdirs();
+							System.out.println(file.isDirectory());
+							FileUtils.byte2File(
+									user_data.toString().getBytes("utf-8"),
+									getExternalCacheDir() + File.separator
+											+ "datas", weiboName + ".data");// 将信息保存成文件形式
+
 							runOnUiThread(new Runnable() {
 								public void run() {
 									dialog.dismiss();
@@ -204,8 +290,8 @@ public class ListActivity extends Activity {
 					// TODO Auto-generated method stub
 					File file = new File(data.getFilepath());
 					if (file.delete()) {
-						// listDatas.remove(itemID);
-						// listDatas.notifyAll();
+//						 listDatas.remove(itemID);
+//						 myListAdapter.notifyAll();
 						runOnUiThread(new Runnable() {
 							public void run() {
 								Toast.makeText(ListActivity.this,
@@ -284,12 +370,18 @@ public class ListActivity extends Activity {
 
 	}
 
-	public final class ViewHolder {
+	private final class ViewHolder {
 		public TextView text_filename;
 		public TextView text_filesize;
 		public ImageView img_logo;
 	}
 
+	/**
+	 * 根据json格式的本地文件列表解析成可用的文件列表
+	 * 
+	 * @param strlist
+	 * @return
+	 */
 	private ArrayList<ListData> JsonlocallistDecoder(String strlist) {
 		if (strlist == "") {
 			Log.e(DEBUG_TAG, "解析json时传入了空字符串！");
@@ -315,6 +407,12 @@ public class ListActivity extends Activity {
 		return listDatas;
 	}
 
+	/**
+	 * 根据json格式的网络文件列表解析成可用的文件列表
+	 * 
+	 * @param strlist
+	 * @return
+	 */
 	private ArrayList<ListData> JsonweblistDecoder(String strlist) {
 		if (strlist == "") {
 			Log.e(DEBUG_TAG, "解析json时传入了空字符串！");
@@ -340,80 +438,6 @@ public class ListActivity extends Activity {
 			e.printStackTrace();
 		}
 		return listDatas;
-	}
-
-	/**
-	 * 以post方式提交参数到服务器
-	 * 
-	 * @param postURL
-	 * @param params
-	 * @return
-	 * @throws IOException
-	 */
-	public String post2server(String postURL, List<NameValuePair> params)
-			throws IOException {
-		final HttpPost httpPost = new HttpPost(postURL);
-		InputStream is = null;
-		httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-		try {
-			HttpResponse response = null;
-			response = new DefaultHttpClient().execute(httpPost);
-			if (response.getStatusLine().getStatusCode() == 201) {
-				is = response.getEntity().getContent();
-			}
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[128];
-		int iLen = -1;
-		while (-1 != (iLen = is.read(buffer)))
-			baos.write(buffer, 0, iLen);
-		final String strRet = new String(baos.toByteArray());
-		System.out.println("获取服务器返回数据：" + strRet);
-		return strRet;
-	}
-
-	/**
-	 * 以get方式提交参数到服务器
-	 * 
-	 * @param getURL
-	 * @param params
-	 * @return 服务器返回的string形式
-	 * @author Jayvee
-	 * @throws Exception
-	 */
-	public String get2server(String getURL) throws Exception {
-		final HttpGet httpGet = new HttpGet(getURL);
-		InputStream is = null;
-		try {
-			HttpResponse response = null;
-			response = new DefaultHttpClient().execute(httpGet);
-			if (response.getStatusLine().getStatusCode() == 201) {
-				is = response.getEntity().getContent();
-			} else {
-				Exception e = new Exception("服务端错误！");
-				throw (e);
-			}
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[128];
-		int iLen = -1;
-		while (-1 != (iLen = is.read(buffer)))
-			baos.write(buffer, 0, iLen);
-		final String strRet = new String(baos.toByteArray());
-		System.out.println("获取服务器返回数据：" + strRet);
-		return strRet;
 	}
 
 }

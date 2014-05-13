@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="jayvee.visualization_test"
+    package="jayvee.visualization_weibo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,12 +18,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="surfaceview_test.SurfaceViewMain"
+            android:name="surfaceview_Main.SurfaceViewMain"
             android:label="复杂网络静态绘图"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
         <activity
-            android:name="surfaceview_test.MainActivity"
+            android:name="surfaceview_Main.MainActivity"
             android:label="可视化研究"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
@@ -44,6 +44,18 @@
         </activity>
         <activity
             android:name="ui.ViewpagerActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:name="surfaceview_Demo.SurfaceViewDemo"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:name="ui.SpreadNaviActivity"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
+        </activity>
+        <activity
+            android:name="ui.SpreadTimelineActivity"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" >
         </activity>
     </application>

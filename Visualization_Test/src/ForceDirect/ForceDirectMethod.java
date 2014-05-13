@@ -1,6 +1,6 @@
 package ForceDirect;
 
-import surfaceview_test.LogicManager;
+import surfaceview_Main.LogicManager;
 
 public class ForceDirectMethod {
 	int area;

@@ -9,7 +9,9 @@ public class ListData {
 	private String filename;
 	private String filesize;
 	private String filepath;
+	private String fileUID;
 	private int id= 0;
+//	private String 
 
 	public String getFilename() {
 		return filename;
@@ -41,6 +43,14 @@ public class ListData {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getFileUID() {
+		return fileUID;
+	}
+
+	public void setFileUID(String fileUID) {
+		this.fileUID = fileUID;
 	}
 
 }

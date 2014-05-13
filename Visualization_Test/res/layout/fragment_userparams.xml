@@ -22,14 +22,40 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <com.echo.holographlibrary.BarGraph
-            android:id="@+id/graph_userparams"
+            android:id="@+id/graph_ClusterCoefficient"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/text_dscp_userparams"
+            android:id="@+id/text_ClusterCoefficient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相关说明" />
+
+        <com.echo.holographlibrary.BarGraph
+            android:id="@+id/graph_BilateralRatio"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/text_BilateralRatio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相关说明" />
+
+        <com.echo.holographlibrary.BarGraph
+            android:id="@+id/graph_TruefollRatio"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/text_TruefollRatio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="相关说明" />

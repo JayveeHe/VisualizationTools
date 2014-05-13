@@ -19,17 +19,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="近期微博转发曲线"
+            android:text="微博转发曲线"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/btn_switchWeibo"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换微博" />
+
+            <Button
+                android:id="@+id/btn_toSpread"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查看传播图" />
+
+        </LinearLayout>
+
         <!--
-            <com.jjoe64.graphview.LineGraphView 
+        <com.jjoe64.graphview.LineGraphView
             android:id="@+id/line_post"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            /> 
-            -->
-
+            android:layout_height="302dp" />        	-->
 
 
         <!--
@@ -39,8 +56,6 @@
             android:layout_height="300dp"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp" />
-
-
         -->
 
         <TextView
@@ -48,6 +63,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="相关说明" />
+
+        <TextView
+            android:id="@+id/text_currentWeibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前微博：\n"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
 </ScrollView>

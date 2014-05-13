@@ -7,32 +7,51 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/btn_weblist"
+        android:id="@+id/btn_ForceDemo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_locallist"
+        android:layout_below="@+id/btn_spread"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp"
-        android:text="获取网络文件列表" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_weblist"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="58dp"
-        android:text="数据挖掘可视化"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#FF8D2A" />
+        android:layout_marginTop="38dp"
+        android:text="布点过程演示" />
 
     <Button
         android:id="@+id/btn_locallist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btn_weblist"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="178dp"
+        android:layout_below="@+id/btn_ForceDemo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="34dp"
         android:text="查看本地文件列表" />
+
+    <Button
+        android:id="@+id/btn_spread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_weblist"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="微博传播分析" />
+
+    <TextView
+        android:id="@+id/text_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="数据挖掘可视化"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FF8D2A"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/btn_weblist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_rank"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="73dp"
+        android:text="好友聚类图" />
 
 </RelativeLayout>

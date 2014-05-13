@@ -3,7 +3,7 @@ package NodeDomain;
 import java.util.ArrayList;
 import java.util.Random;
 
-import surfaceview_test.LogicManager;
+import surfaceview_Main.LogicManager;
 import android.util.Log;
 
 public class NodeDomainData {

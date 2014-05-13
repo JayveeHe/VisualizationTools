@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         android:layout_gravity="center_horizontal"
-        android:textSize="24dp" />
+        android:textSize="24sp" />
 
 </LinearLayout>

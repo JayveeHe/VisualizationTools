@@ -1,6 +1,6 @@
 package NodeDomain;
 
-import surfaceview_test.LogicManager;
+import surfaceview_Main.LogicManager;
 import android.R.color;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ public class NodeDomainView {
 	Paint textpaint = new Paint(Color.BLACK);
 
 	public NodeDomainView(NodeDomainData data) {
-		textpaint.setTextSize(18);
+		textpaint.setTextSize(30);
 		this.data = data;
 		p.setColor(data.color);
 		// switch (data.group % 7) {
@@ -63,7 +63,9 @@ public class NodeDomainView {
 
 		// 线段的绘制，只有在移动、缩放结束后才进行绘制
 		if (!logicManager.isChanging()) {
-			if (data.getParentID() != "-1" && logicManager.fScaleRate > 1.2f)// 即有母节点，且缩放达到某个阈值，则进行线段的绘制
+			// if (data.getParentID() != "-1" && logicManager.fScaleRate >
+			// 1.2f)// 即有母节点，且缩放达到某个阈值，则进行线段的绘制
+			if (data.getParentID() != "-1")// 即有母节点，则进行线段的绘制
 			{
 				canvas.drawLine(data.getViewX(), data.getViewY(), logicManager
 						.getDomainLogic(data.getParentID()).getData()
@@ -71,20 +73,26 @@ public class NodeDomainView {
 						logicManager.getDomainLogic(data.getParentID())
 								.getData().getViewY(), p);
 			}
+
 		}
 
 		// 节点的绘制
 		canvas.drawCircle(data.getViewX(), data.getViewY(), data.getRadius()
 				* logicManager.fScaleRate, p);
 
-		// 节点名字的绘制
-		if (logicManager.fScaleRate > 3.5
-				&& (Math.abs((data.getViewX())) < logicManager.iViewWidth && Math
-						.abs((data.getViewY())) < logicManager.iViewHeight))// 缩放达到某个阈值且该节点在画面内才进行名字显示
-		{
-			canvas.drawText(data.key, data.getViewX(), data.getViewY(),
-					textpaint);
+		// 节点名字的绘制，只在移动和缩放结束后绘制
+		if (!logicManager.isChanging()) {
+			if (logicManager.fScaleRate > 2.5f
+					&& (Math.abs((data.getViewX())) < logicManager.iViewWidth && Math
+							.abs((data.getViewY())) < logicManager.iViewHeight))// 缩放达到某个阈值且该节点在画面内才进行名字显示
+			{
+				textpaint.setTextSize(data.getRadius()
+						* logicManager.fScaleRate);
+				canvas.drawText(data.key, data.getViewX(), data.getViewY(),
+						textpaint);
+			}
 		}
+
 		// textpaint.setTextSize(logicManager.fScaleRate*5);
 	}
 }

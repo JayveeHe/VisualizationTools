@@ -53,6 +53,8 @@ public class FileUtils {
 		File file = null;
 		try {
 			File dir = new File(filePath);
+			System.out.println("isDirectory=" + dir.isDirectory() + "exists="
+					+ dir.exists());
 			if (!dir.exists() && dir.isDirectory()) {
 				dir.mkdirs();
 			}
@@ -60,7 +62,8 @@ public class FileUtils {
 			fos = new FileOutputStream(file);
 			bos = new BufferedOutputStream(fos);
 			bos.write(buf);
-			System.out.println("byte2File完成！输出地址为：" + filePath);
+			System.out.println("byte2File完成！输出地址为：" + filePath + File.separator
+					+ fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
