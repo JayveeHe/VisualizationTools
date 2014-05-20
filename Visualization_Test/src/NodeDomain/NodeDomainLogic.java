@@ -17,7 +17,7 @@ public class NodeDomainLogic {
 	public static final String DEBUG_TAG = "领域对象调试";
 
 	private boolean isAtomNode = false;
-	private boolean isExpand = false;
+//	private boolean isExpand = false;
 
 	public NodeDomainLogic(String ID, NodeDomainView DomainView,
 			NodeDomainData DomainData, boolean isAtomNode) {
@@ -155,13 +155,13 @@ public class NodeDomainLogic {
 		this.isAtomNode = isAtomNode;
 	}
 
-	public boolean isExpand() {
-		return isExpand;
-	}
-
-	public void setExpand(boolean isExpand) {
-		this.isExpand = isExpand;
-	}
+//	public boolean isExpand() {
+//		return isExpand;
+//	}
+//
+//	public void setExpand(boolean isExpand) {
+//		this.isExpand = isExpand;
+//	}
 
 	public NodeDomainData getData() {
 		return data;

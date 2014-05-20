@@ -1,5 +1,10 @@
 package SpreadUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -20,7 +25,7 @@ import SpreadUtils.PlotUtils.IDrawableNode;
 import com.google.gson.JsonObject;
 
 public class WeiboSpreadUtils {
-	public static String ACCESS_TOKEN = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
+	public static String ACCESS_TOKEN = "2.00zooRcF0m6btu8b0dfb8e19N11dDB";
 
 	// private static String show_wid;
 	public static String show_name;
@@ -38,9 +43,10 @@ public class WeiboSpreadUtils {
 	 * @param time_interval
 	 *            转发曲线的时间间隔，以分钟为单位
 	 * @return int[]形式的转发曲线坐标
+	 * @throws IOException 
 	 */
 	public static int[] WeiboSpread(String URL, String filename,
-			int time_interval) {
+			int time_interval) throws IOException {
 
 		Map<String, SpreadNodeData> map = null;
 		try {
@@ -73,7 +79,24 @@ public class WeiboSpreadUtils {
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println("用时：" + time / 1000 + "秒");
-		GexfUtils.createGexf(info_map, filename);
+		if (filename != null) {
+			GexfUtils.createGexf(info_map, filename);
+		} else {
+			GexfUtils.createGexf(info_map, System.currentTimeMillis() + "-"
+					+ WeiboSpreadUtils.show_name + ".gexf");
+			File file = new File(System.currentTimeMillis() + "-count.txt");
+			FileOutputStream os = new FileOutputStream(file);
+			FileWriter fw = new FileWriter(file);
+			fw.append("url="+URL+"\n");
+			fw.append("interval="+time_interval+"\n");
+			fw.append("counts=\n");
+			for (int i = 0; i < curve.length; i++) {
+				String str = String.valueOf(curve[i]) + " ";
+				fw.append(str);
+			}
+			os.flush();
+			os.close();
+		}
 		return curve;
 	}
 

@@ -379,12 +379,27 @@ public class SurfaceViewMain extends Activity {
 		public boolean onMenuItemClick(MenuItem item) {
 			// TODO Auto-generated method stub
 			if (!source.equals("SpreadNavi")) {
-				Intent intent = new Intent(SurfaceViewMain.this,
-						ViewpagerActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putString("userName", filename.replaceAll(".gexf", ""));
-				intent.putExtras(bundle);
-				startActivity(intent);
+				String username = filename.replaceAll(".gexf", "");
+				File file = new File(getExternalCacheDir() + File.separator
+						+ "datas" + File.separator + username
+						+ ".data");
+				if (file.exists()) {
+
+					Intent intent = new Intent(SurfaceViewMain.this,
+							ViewpagerActivity.class);
+					Bundle bundle = new Bundle();
+					bundle.putString("userName",
+							filename.replaceAll(".gexf", ""));
+					intent.putExtras(bundle);
+					startActivity(intent);
+				} else {
+					runOnUiThread(new Runnable() {
+						public void run() {
+							Toast.makeText(SurfaceViewMain.this, "没有找到相应数据！",
+									Toast.LENGTH_SHORT).show();
+						}
+					});
+				}
 			} else {
 				// 从传播分析而来
 				Intent intent = new Intent(SurfaceViewMain.this,

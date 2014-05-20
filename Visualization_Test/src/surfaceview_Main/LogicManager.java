@@ -159,11 +159,11 @@ public class LogicManager {
 	public void addChildDomainLogic(NodeDomainLogic ParentLogic,
 			NodeDomainLogic ChildLogic) {
 		// 首先修改母节点的距离信息,只有在母节点第一次添加子节点时调用
-		if (!ParentLogic.isExpand()) {
-			ParentLogic.getData().onModify(NodeDomainData.MODIFY_LEN,
-					ParentLogic.getData().getLen() * 2, this);
-			ParentLogic.setExpand(true);
-		}
+//		if (!ParentLogic.isExpand()) {
+//			ParentLogic.getData().onModify(NodeDomainData.MODIFY_LEN,
+//					ParentLogic.getData().getLen() * 2, this);
+//			ParentLogic.setExpand(true);
+//		}
 		try {
 			// 在逻辑控制器中注册子节点逻辑
 			NodesMap.put(ChildLogic.getID(), ChildLogic);

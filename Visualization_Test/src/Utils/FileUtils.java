@@ -99,10 +99,10 @@ public class FileUtils {
 		int count = -1;
 		// while ((count = in.read(data, 0, 4096)) != -1)
 		while ((count = in.read(data)) != -1) {
-			Log.d("FileUtils", count + "gg");
+//			Log.d("FileUtils", count + "gg");
 			outStream.write(data, 0, count);
 		}
-		Log.d("FileUtils", "done");
+		Log.d("FileUtils-InputStreamTOByte", "done");
 		data = null;
 		return outStream.toByteArray();
 	}

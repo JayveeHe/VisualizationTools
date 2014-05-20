@@ -52,6 +52,6 @@
         android:layout_below="@+id/text_rank"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="73dp"
-        android:text="好友聚类图" />
+        android:text="好友关系图" />
 
 </RelativeLayout>

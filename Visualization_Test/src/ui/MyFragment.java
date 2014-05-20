@@ -78,9 +78,9 @@ import android.widget.Toast;
 
 public class MyFragment extends Fragment {
 	int mNum;// 页号
-	private SQLiteDatabase db;
 	private String userID;
 	private String wid;
+	private boolean hasDate = true;
 
 	int Vtexin;
 	int Vtexout;
@@ -704,48 +704,55 @@ public class MyFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				try {
-					final String URL = new String(
-							"http://10.108.192.119:8080/MicroBlogDisplay/dataMiningResource/gexfs/"
-									+ URLEncoder
-											.encode(ViewpagerActivity.userName,
-													"utf-8") + "/" + wid
-									+ "/1.gexf");
-					new Thread(new Runnable() {
-						public void run() {
-							try {
-								// ProgressDialog dialog = new
-								// ProgressDialog(getActivity());
-								// dialog.setMessage("正在读取，请稍后……");
-								FileUtils.byte2File(NetworkUtils
-										.get2Server(URL).getBytes("utf-8"),
-										getActivity().getExternalCacheDir()
-												+ File.separator + "datas",
-										"SpreadTemp.gexf");
-								String filepath = getActivity()
-										.getExternalCacheDir()
-										+ File.separator
-										+ "datas"
-										+ File.separator
-										+ "SpreadTemp.gexf";
-								Intent intent = new Intent(getActivity(),
-										SurfaceViewMain.class);
-								Bundle bundle = new Bundle();
-								bundle.putString("filepath", filepath);
-								bundle.putBoolean("isSpread", true);
-								bundle.putString("source", "fragment");
-								intent.putExtras(bundle);
-								// dialog.dismiss();
-								startActivity(intent);
-							} catch (UnsupportedEncodingException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+				if (hasDate) {
+					try {
+						final String URL = new String(NaviActivity.labURL
+								+ "dataMiningResource/gexfs/"
+								+ URLEncoder.encode(ViewpagerActivity.userName,
+										"utf-8") + "/" + wid + "/1.gexf");
+						new Thread(new Runnable() {
+							public void run() {
+								try {
+									// ProgressDialog dialog = new
+									// ProgressDialog(getActivity());
+									// dialog.setMessage("正在读取，请稍后……");
+									FileUtils.byte2File(NetworkUtils
+											.get2Server(URL).getBytes("utf-8"),
+											getActivity().getExternalCacheDir()
+													+ File.separator + "datas",
+											"SpreadTemp.gexf");
+									String filepath = getActivity()
+											.getExternalCacheDir()
+											+ File.separator
+											+ "datas"
+											+ File.separator
+											+ "SpreadTemp.gexf";
+									Intent intent = new Intent(getActivity(),
+											SurfaceViewMain.class);
+									Bundle bundle = new Bundle();
+									bundle.putString("filepath", filepath);
+									bundle.putBoolean("isSpread", true);
+									bundle.putString("source", "fragment");
+									intent.putExtras(bundle);
+									// dialog.dismiss();
+									startActivity(intent);
+								} catch (UnsupportedEncodingException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							}
+						}).start();
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					getActivity().runOnUiThread(new Runnable() {
+						public void run() {
+							Toast.makeText(getActivity(), "没有转发图！",
+									Toast.LENGTH_SHORT).show();
 						}
-					}).start();
-				} catch (UnsupportedEncodingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					});
 				}
 			}
 		});
@@ -763,9 +770,10 @@ public class MyFragment extends Fragment {
 		JSONArray array_curve = recentWeibo.getJSONArray("repost_timeline");
 		// JSONObject testError = array_curve.getJSONObject(0);
 		// testError.has("date");
-		if (array_curve.getJSONObject(0).has("date")) {
+		if (array_curve.length()!=0&&array_curve.getJSONObject(0).has("date")) {
 			GraphViewData graphViewDatas[] = new GraphViewData[array_curve
 					.length()];
+			hasDate = true;
 			double Ymax = 0;
 			double Xmax = 0;
 			for (int i = 0; i < array_curve.length(); i++) {
@@ -782,8 +790,7 @@ public class MyFragment extends Fragment {
 
 			GraphViewSeries graphViewSeries = new GraphViewSeries(
 					graphViewDatas);
-			final LineGraphView graphView = new LineGraphView(getActivity(),
-					"");
+			final LineGraphView graphView = new LineGraphView(getActivity(), "");
 			graphView.addSeries(graphViewSeries); // data
 
 			graphView.setManualYAxisBounds(Ymax, 0);
@@ -795,11 +802,10 @@ public class MyFragment extends Fragment {
 			graphView.setViewPort(0, Xmax);
 			layout.addView(graphView, 1, new LayoutParams(480, 500));
 		} else {
-//			GraphViewSeries graphViewSeries = new GraphViewSeries(
-//					graphViewDatas);
-			final LineGraphView graphView = new LineGraphView(getActivity(),
-					"");
-			// graphView.addSeries(graphViewSeries); // data
+			GraphViewSeries graphViewSeries = new GraphViewSeries(
+					new GraphViewData[] { new GraphViewData(0, 0) });
+			final LineGraphView graphView = new LineGraphView(getActivity(), "");
+			graphView.addSeries(graphViewSeries);
 			//
 			// graphView.setManualYAxisBounds(Ymax, 0);
 			// graphView.setManualYAxis(true);
@@ -808,7 +814,10 @@ public class MyFragment extends Fragment {
 			// graphView.setScrollable(true);
 			// graphView.setScalable(true);
 			// graphView.setViewPort(0, Xmax);
+//			getParentFragment().getView().getWidth()*0.8f;
 			layout.addView(graphView, 1, new LayoutParams(480, 500));
+//			layout.addView(graphView, 1, new LayoutParams((int) (layout.getWidth()*0.6f), 500));
+			hasDate = false;
 			getActivity().runOnUiThread(new Runnable() {
 				public void run() {
 					Toast.makeText(getActivity(), "没有转发数据！", Toast.LENGTH_SHORT)

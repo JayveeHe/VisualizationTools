@@ -18,22 +18,22 @@ import org.apache.http.protocol.HTTP;
 public class NetworkUtils {
 	/**
 	 * 以get方法从服务器获取返回值（字符串形式）
+	 * 
 	 * @param URL
 	 * @return String形式的返回值
 	 * @author Jayvee
-	 * @throws UnsupportedEncodingException 
+	 * @throws UnsupportedEncodingException
 	 */
-	static public String get2Server(String URL) throws UnsupportedEncodingException {
+	static public String get2Server(String URL)
+			throws UnsupportedEncodingException {
 		HttpGet httpGet = new HttpGet(URL);
 		InputStream is = null;
 		try {
 			HttpResponse response = new DefaultHttpClient().execute(httpGet);
 			is = response.getEntity().getContent();
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -43,14 +43,13 @@ public class NetworkUtils {
 			while (-1 != (iLen = is.read(buffer)))
 				baos.write(buffer, 0, iLen);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		final String strRet = new String(baos.toByteArray(),"utf-8");
+		final String strRet = new String(baos.toByteArray(), "utf-8");
 		System.out.println("获取服务器返回数据：" + strRet);
 		return strRet;
 	}
-	
+
 	/**
 	 * 以post方式提交参数到服务器
 	 * 
@@ -68,9 +67,9 @@ public class NetworkUtils {
 		try {
 			HttpResponse response = null;
 			response = new DefaultHttpClient().execute(httpPost);
-//			if (response.getStatusLine().getStatusCode() == 201) {
-				is = response.getEntity().getContent();
-//			}
+			// if (response.getStatusLine().getStatusCode() == 201) {
+			is = response.getEntity().getContent();
+			// }
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,12 +82,9 @@ public class NetworkUtils {
 		int iLen = -1;
 		while (-1 != (iLen = is.read(buffer)))
 			baos.write(buffer, 0, iLen);
-		final String strRet = new String(baos.toByteArray(),"utf-8");
+		final String strRet = new String(baos.toByteArray(), "utf-8");
 		System.out.println("获取服务器返回数据：" + strRet);
 		return strRet;
 	}
-	
-	
-	
-	
+
 }

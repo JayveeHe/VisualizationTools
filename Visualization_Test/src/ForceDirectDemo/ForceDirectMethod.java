@@ -16,7 +16,7 @@ public class ForceDirectMethod {
 		int iViewHeight = logicManager.iViewHeight;
 		area = iViewHeight * iViewWidth;// 计算区域面积
 		k = (float) Math.sqrt(area / logicManager.getNodesMap().size());// k为点密度的开根号。
-		System.out.println("FDA方法创建，K=" + k);
+//		System.out.println("FDA方法创建，K=" + k);
 	}
 
 	/**

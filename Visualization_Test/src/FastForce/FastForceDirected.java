@@ -10,12 +10,6 @@ import java.util.List;
 
 import FastForce.Convert;
 
-/**
- * 用于进行快速力引导布点算法的工具类
- * 
- * @author Tao
- * 
- */
 public class FastForceDirected {
 	private double[][] script(int[] adjacency, int nodeNum) throws IOException {
 		YifanHuLayout yifanHuLayout = new YifanHuLayout(nodeNum);

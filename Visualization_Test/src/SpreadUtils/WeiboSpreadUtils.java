@@ -24,14 +24,14 @@ import Nodes.SpreadNodeData;
 import SpreadUtils.PlotUtils.IDrawableNode;
 
 public class WeiboSpreadUtils {
-	public static String ACCESS_TOKEN = "2.00t3nVnCe3dgkC63ac35576efRXPWC";
+	public static String ACCESS_TOKEN = "2.00zooRcF0m6btu8b0dfb8e19N11dDB";
 
 	// private static String show_wid;
 	public static String show_name;
 	private static int max_count = 1950;
 
 	private static Context context;
-	
+
 	private static JSONObject root;// 用于保存整体传播分析的信息
 
 	/**
@@ -155,7 +155,7 @@ public class WeiboSpreadUtils {
 			// SpreadNaviActivity.setDialogMSG("总共" + max_page + "页，正在读取第" +
 			// page
 			// + "页,请稍后。");
-			
+
 			String repost_resp = NetworkUtils.getReq(rptl_URL + "access_token="
 					+ ACCESS_TOKEN + "&id=" + show_wid + "&count=200"
 					// + "&max_id=" + max_id
@@ -221,10 +221,11 @@ public class WeiboSpreadUtils {
 						// + m1.group());
 						text = Pattern.compile("//@").matcher(m1.group())
 								.replaceAll("");
-					} else {
-						// System.out.println("第" + user_count + "个用户的匹配内容：" +
-						// "");
 					}
+					// else {
+					// // System.out.println("第" + user_count + "个用户的匹配内容：" +
+					// // "");
+					// }
 
 					// 提取此节点为几次转发，并提出母节点的用户名
 					Pattern p2 = Pattern
@@ -236,7 +237,6 @@ public class WeiboSpreadUtils {
 								.replaceAll("");
 						t = Pattern.compile("[:|：]").matcher(t).replaceAll("");
 						repost_link.add(t);
-						// System.out.println("匹配到的转发名：" + t);
 						if (count == 1) {
 							parent_name = t;
 						}
@@ -245,12 +245,7 @@ public class WeiboSpreadUtils {
 				} else {
 					text = temp;
 					parent_name = show_name;
-					// System.out.println("第" + user_count + "个用户的处理前的微博：" +
-					// temp);
-					// System.out.println("第" + user_count + "个用户的匹配内容：" +
-					// temp);
 				}
-				// System.out.println("第" + user_count + "个用户的微博：" + text);//
 				// 所得结果为正确的
 				repost_link.add(show_name);// 默认的转发链中有指定分析的微博
 				level = count + 1;// 转发级数
@@ -265,6 +260,11 @@ public class WeiboSpreadUtils {
 		return map;
 	}
 
+	/**
+	 * 设置转发关系的函数
+	 * 
+	 * @param map
+	 */
 	private static void setRelationship(Map<String, SpreadNodeData> map) {
 		int count = 0;
 		for (SpreadNodeData data : map.values()) {
@@ -310,8 +310,6 @@ public class WeiboSpreadUtils {
 		SpreadTimelineActivity.repostRank = (ArrayList<SpreadNodeData>) arrayCountList
 				.clone();
 		// 发送时间排序
-		// ArrayList<SpreadNodeData> arrayTimeList = new
-		// ArrayList<>(map.values());
 		Collections.sort(arrayCountList);// 以发送时间进行排序
 		final long time_interval = interval * 60000;// 统计的时间间隔为5分钟
 		List<Long> timelist = new ArrayList<Long>();
@@ -322,7 +320,6 @@ public class WeiboSpreadUtils {
 		long startTime = timelist.get(0);
 		SpreadTimelineActivity.startTime = startTime;
 		long endTime = timelist.get(timelist.size() - 1);
-		// double temp = Math.ceil((endTime - startTime) / time_interval);
 		int arraylen = (int) Math.ceil((endTime - startTime) / time_interval);
 		int[] countArray = new int[arraylen + 1];
 		for (int i = 0; i < timelist.size(); i++) {

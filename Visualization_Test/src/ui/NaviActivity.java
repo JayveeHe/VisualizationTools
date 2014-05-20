@@ -58,8 +58,10 @@ import android.widget.Toast;
 public class NaviActivity extends Activity {
 
 	public final static String strURL = "http://getgexf.nat123.net";
-	public final static String localURL = "http://10.202.10.176:8080";
-	public final static String labURL = "http://10.108.192.119:8080";
+	public final static String localURL = "http://192.168.199.2:8080/MicroBlogDisplay/";
+	public final static String labURL = "http://10.108.192.119:8080/weibo/";
+
+//	public final static String labURL = "http://192.168.199.2:8080/weibo/";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,7 @@ public class NaviActivity extends Activity {
 					public void run() {
 						try {
 							String list = getWeblist(new URL(labURL
-									+ "/MicroBlogDisplay/namelist.do"));
+									+ "namelist.do"));
 							if (null != list) {
 								// 将从服务器获取的文件列表以json格式的string传送到下一个activity
 								Bundle bundle = new Bundle();
@@ -120,9 +122,17 @@ public class NaviActivity extends Activity {
 									}
 								});
 								startActivity(intent);
+							}else {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										dialog.dismiss();
+										Toast.makeText(NaviActivity.this, "服务器返回空值，请检查服务器设置！", Toast.LENGTH_SHORT).show();
+									}
+								});
 							}
 						} catch (MalformedURLException e) {
 							e.printStackTrace();
+							dialog.dismiss();
 						} catch (IOException e) {
 							e.printStackTrace();
 							runOnUiThread(new Runnable() {
@@ -135,6 +145,7 @@ public class NaviActivity extends Activity {
 							});
 						} catch (URISyntaxException e) {
 							e.printStackTrace();
+							dialog.dismiss();
 						}
 					}
 				}).start();
@@ -219,11 +230,15 @@ public class NaviActivity extends Activity {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] buffer = new byte[128];
 		int iLen = -1;
-		while (-1 != (iLen = is.read(buffer)))
-			baos.write(buffer, 0, iLen);
-		final String strRet = new String(baos.toByteArray());
-		System.out.println("获取服务器返回数据：" + strRet);
-		return strRet;
+		if (is != null) {
+			while (-1 != (iLen = is.read(buffer)))
+				baos.write(buffer, 0, iLen);
+			final String strRet = new String(baos.toByteArray());
+			System.out.println("获取服务器返回数据：" + strRet);
+			return strRet;
+		} else {
+			return null;
+		}
 	}
 
 	/**

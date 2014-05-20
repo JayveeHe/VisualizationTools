@@ -137,7 +137,7 @@ public class ListActivity extends Activity {
 							// post方式获取下载文件
 							String weiboName = filename;
 							URL url = new URL(NaviActivity.labURL
-									+ "/MicroBlogDisplay/download.do");
+									+ "download.do");
 							final List<NameValuePair> params = new ArrayList<NameValuePair>();
 							params.add(new BasicNameValuePair("weiboName",
 									weiboName));
@@ -152,7 +152,7 @@ public class ListActivity extends Activity {
 
 							pull_resp = NetworkUtils
 									.post2server(
-											"http://10.108.192.119:8080/MicroBlogDisplay/androidpull.do",
+											NaviActivity.labURL+"androidpull.do",
 											params);
 							System.out.println(pull_resp);
 							JSONTokener tokener = new JSONTokener(pull_resp);
@@ -187,7 +187,7 @@ public class ListActivity extends Activity {
 
 
 							// 根据uid获取最近转发的微博
-							final String recentweibolistURL = "http://10.108.192.119:8080/MicroBlogDisplay/recentweibolist.do?";
+							final String recentweibolistURL = NaviActivity.labURL+"recentweibolist.do?";
 							String recentweibolist = NetworkUtils
 									.get2Server(recentweibolistURL + "uid="
 											+ userID);
@@ -211,7 +211,7 @@ public class ListActivity extends Activity {
 								WeiboDetails.put("Text", text);
 								WeiboDetails.put("Retweeted", Retweeted);
 
-								String weibocurveURL = "http://10.108.192.119:8080/MicroBlogDisplay/weibocurve.do?";
+								String weibocurveURL = NaviActivity.labURL+"weibocurve.do?";
 								String STR_weibocurve = NetworkUtils
 										.get2Server(weibocurveURL + "wid="
 												+ wid);

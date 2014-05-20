@@ -42,10 +42,8 @@ public class GexfUtils {
 			InputStream inpt_strm = res.getAssets().open(Filename);
 			document = saxReader.read(inpt_strm);
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Element root = document.getRootElement();
@@ -55,7 +53,6 @@ public class GexfUtils {
 		// 读取节点信息
 		for (int i = 0; i < nodes.size(); i++) {
 			Element node = nodes.get(i);
-			// String sss = node.attribute("id").getText();
 			String id = node.attribute("id").getText();
 			String label = "";
 			try {
@@ -63,9 +60,7 @@ public class GexfUtils {
 			} catch (Exception e) {
 				Log.e(DEBUG_TAG, "读取label错误");
 			}
-			// List<Element> viz = node.content();
 			Element color = node.element("color");
-			// Element color = viz.get(0);
 			int color_b = Integer.parseInt(color.attribute("b").getText());
 			int color_g = Integer.parseInt(color.attribute("g").getText());
 			int color_r = Integer.parseInt(color.attribute("r").getText());
@@ -80,7 +75,6 @@ public class GexfUtils {
 				Element other = node.element("node-shape");
 				imageURI = other.attribute("uri").getText();
 			} catch (Exception e) {
-				// e.printStackTrace();
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
 			System.out.println(label);
@@ -120,10 +114,8 @@ public class GexfUtils {
 		Document document = null;
 		Map<String, WeiboNodeData> map = new HashMap<String, WeiboNodeData>();
 		try {
-//			 InputStream inpt_strm = ;
 			document = saxReader.read(file);
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Element root = document.getRootElement();
@@ -133,7 +125,6 @@ public class GexfUtils {
 		// 读取节点信息
 		for (int i = 0; i < nodes.size(); i++) {
 			Element node = nodes.get(i);
-			// String sss = node.attribute("id").getText();
 			String id = node.attribute("id").getText();
 			String label = "";
 			try {
@@ -141,9 +132,7 @@ public class GexfUtils {
 			} catch (Exception e) {
 				Log.e(DEBUG_TAG, "读取label错误");
 			}
-			// List<Element> viz = node.content();
 			Element color = node.element("color");
-			// Element color = viz.get(0);
 			int color_b = Integer.parseInt(color.attribute("b").getText());
 			int color_g = Integer.parseInt(color.attribute("g").getText());
 			int color_r = Integer.parseInt(color.attribute("r").getText());
@@ -161,7 +150,6 @@ public class GexfUtils {
 				// e.printStackTrace();
 				Log.e(DEBUG_TAG, "读取附加对象错误");
 			}
-//			System.out.println(label);
 			WeiboNodeData weibodata = new WeiboNodeData(x, y, 0, label, id, color_int,
 					value, imageURI);
 			map.put(id, weibodata);
@@ -198,7 +186,6 @@ public class GexfUtils {
 		try {
 			document = saxReader.read(inpt_strm);
 		} catch (DocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Element root = document.getRootElement();
@@ -208,7 +195,6 @@ public class GexfUtils {
 		// 读取节点信息
 		for (int i = 0; i < nodes.size(); i++) {
 			Element node = nodes.get(i);
-			// String sss = node.attribute("id").getText();
 			String id = node.attribute("id").getText();
 			String label = "";
 			try {
@@ -216,9 +202,7 @@ public class GexfUtils {
 			} catch (Exception e) {
 				Log.e(DEBUG_TAG, "读取label错误");
 			}
-			// List<Element> viz = node.content();
 			Element color = node.element("color");
-			// Element color = viz.get(0);
 			int color_b = Integer.parseInt(color.attribute("b").getText());
 			int color_g = Integer.parseInt(color.attribute("g").getText());
 			int color_r = Integer.parseInt(color.attribute("r").getText());
