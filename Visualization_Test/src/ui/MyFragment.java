@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -23,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import surfaceview_Main.LogicManager;
 import surfaceview_Main.SurfaceViewMain;
 import jayvee.visualization_weibo.R;
 
@@ -800,7 +802,11 @@ public class MyFragment extends Fragment {
 			graphView.setScrollable(true);
 			graphView.setScalable(true);
 			graphView.setViewPort(0, Xmax);
-			layout.addView(graphView, 1, new LayoutParams(480, 500));
+			
+//			System.out.println("屏幕宽度="+getActivity().getCurrentFocus().getWidth());
+			layout.addView(graphView, 1, new LayoutParams(
+					(int) (NaviActivity.ViewWidth * 0.9f),
+					(int) (NaviActivity.ViewHeight * 0.5f)));
 		} else {
 			GraphViewSeries graphViewSeries = new GraphViewSeries(
 					new GraphViewData[] { new GraphViewData(0, 0) });
@@ -815,7 +821,11 @@ public class MyFragment extends Fragment {
 			// graphView.setScalable(true);
 			// graphView.setViewPort(0, Xmax);
 //			getParentFragment().getView().getWidth()*0.8f;
-			layout.addView(graphView, 1, new LayoutParams(480, 500));
+			
+			layout.addView(graphView, 1, new LayoutParams(
+					(int) (NaviActivity.ViewWidth * 0.9f),
+					(int) (NaviActivity.ViewHeight * 0.5f)));
+//			layout.addView(graphView, 1, new LayoutParams(480, 500));
 //			layout.addView(graphView, 1, new LayoutParams((int) (layout.getWidth()*0.6f), 500));
 			hasDate = false;
 			getActivity().runOnUiThread(new Runnable() {

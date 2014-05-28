@@ -45,6 +45,7 @@ import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +53,7 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +63,10 @@ public class NaviActivity extends Activity {
 	public final static String localURL = "http://192.168.199.2:8080/MicroBlogDisplay/";
 	public final static String labURL = "http://10.108.192.119:8080/weibo/";
 
-//	public final static String labURL = "http://192.168.199.2:8080/weibo/";
+	public static int ViewWidth;
+	public static int ViewHeight;
+
+	// public final static String labURL = "http://192.168.199.2:8080/weibo/";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,7 @@ public class NaviActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(NaviActivity.this,
 						SpreadNaviActivity.class);
+				onSetHW();
 				startActivity(intent);
 			}
 		});
@@ -90,6 +96,7 @@ public class NaviActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent intent = new Intent(NaviActivity.this,
 						SurfaceViewDemo.class);
+				onSetHW();
 				startActivity(intent);
 			}
 		});
@@ -121,12 +128,15 @@ public class NaviActivity extends Activity {
 										dialog.dismiss();
 									}
 								});
+								onSetHW();
 								startActivity(intent);
-							}else {
+							} else {
 								runOnUiThread(new Runnable() {
 									public void run() {
 										dialog.dismiss();
-										Toast.makeText(NaviActivity.this, "服务器返回空值，请检查服务器设置！", Toast.LENGTH_SHORT).show();
+										Toast.makeText(NaviActivity.this,
+												"服务器返回空值，请检查服务器设置！",
+												Toast.LENGTH_SHORT).show();
 									}
 								});
 							}
@@ -164,6 +174,7 @@ public class NaviActivity extends Activity {
 				bundle.putBoolean("isLocal", true);
 				bundle.putString("list", list);
 				intent.putExtras(bundle);
+				onSetHW();
 				startActivity(intent);
 			}
 		});
@@ -198,6 +209,16 @@ public class NaviActivity extends Activity {
 					}
 				});
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	/**
+	 * 设置获取屏幕像素宽高
+	 */
+	private void onSetHW() {
+		RelativeLayout layout = (RelativeLayout) findViewById(R.id.layout_navi);
+		ViewWidth = layout.getWidth();
+		ViewHeight = layout.getHeight();
+		Log.d("NaviActivity", "设置了屏幕宽高值");
 	}
 
 	/**

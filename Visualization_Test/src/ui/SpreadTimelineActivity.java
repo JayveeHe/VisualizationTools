@@ -62,7 +62,10 @@ public class SpreadTimelineActivity extends Activity {
 		graphView.setViewPort(0, Xmax);
 		// layout.addView(graphView);
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearlayout_spreadtimeline);
-		layout.addView(graphView, 1, new LayoutParams(480, 500));
+//		layout.addView(graphView, 1, new LayoutParams(480, 500));
+		layout.addView(graphView, 1, new LayoutParams(
+				(int) (NaviActivity.ViewWidth * 0.9f),
+				(int) (NaviActivity.ViewHeight * 0.5f)));
 
 		// 标注点的处理
 		GraphViewData clickData = new GraphViewData(0, curve[0]);
