@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/title_postline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="微博转发曲线"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/btn_switchWeibo"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="切换微博" />
+
+            <Button
+                android:id="@+id/btn_toSpread"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="查看传播图" />
+
+        </LinearLayout>
+
+        <!--
+        <com.jjoe64.graphview.LineGraphView
+            android:id="@+id/line_post"
+            android:layout_width="match_parent"
+            android:layout_height="302dp" />        	-->
+
+
+        <!--
+              <com.echo.holographlibrary.LineGraph
+            android:id="@+id/graph_postline"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+        -->
+
+        <TextView
+            android:id="@+id/text_dscp_postline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相关说明" />
+
+        <TextView
+            android:id="@+id/text_currentWeibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前微博：\n"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+</ScrollView>

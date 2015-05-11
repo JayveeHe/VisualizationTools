@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="截图"/>
+    <item
+        android:id="@+id/charts"
+        android:orderInCategory="200"
+        android:showAsAction="never"
+        android:title="参数显示"/>
+    <item android:id="@+id/readme"
+        android:orderInCategory="300"
+        android:showAsAction="never"
+        android:title="说明"/>
+    
+      <item android:id="@+id/search"
+        android:orderInCategory="400"
+        android:showAsAction="never"
+        android:title="搜索节点"/>
+
+</menu>
