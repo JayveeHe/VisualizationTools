@@ -93,7 +93,7 @@ public class NetworkUtils {
         conn.setRequestProperty("Host", host);
         conn.setRequestProperty("Method", "GET");
 //        String cookie = FileUtils.File2str("./conf/cookie");
-        String cookie = "_WEIBO_UID=1692530220; _T_WM=0a3c9e8617a78ab09d2decd121efe66a; SUB=_2A254VLx_DeTxGedI4lAU8y7OyTyIHXVbtsQ3rDV6PUJbvNANLWj6kW1kU5d2oPNf2IE8wNuYZ4sbiHvZYg..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WFhR8XsKz4fOX-kiJ8IYPLv5JpX5K-t; SUHB=0ebczeZBpGiws7; SSOLoginState=1431358511; M_WEIBOCN_PARAMS=uicode%3D20000061%26featurecode%3D20000180%26fid%3D3793975192110178%26oid%3D3793975192110178";
+        String cookie = "_T_WM=52e123f869582779989409949cd420eb; SUB=_2A254XRVNDeTxGeNP71QV8S_EzTmIHXVbobsFrDV6PUJbrdBeLVrnkW2Dh0YqyW4_D8vQ2oTsuFI9QcOGAA..; SUHB=0D-V_faheNrwve; SSOLoginState=1431921948; M_WEIBOCN_PARAMS=uicode%3D20000174";
         conn.setRequestProperty("Cookie",cookie);
         conn.setReadTimeout(5000);
         try {
