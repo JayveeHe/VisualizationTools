@@ -111,7 +111,7 @@ public class SpreadTimelineActivity extends Activity {
 				int lastX = (int) Math.floor(Xposition / 5);
 				int nextX = lastX + 1;
 				final float clickY;
-				if (curve.length <= 1) {
+				if (lastX>curve.length - 2) {
 					clickY = curve[0];
 				} else {
 					clickY = curve[lastX] + ((Xposition - lastX * 5) / 5)
