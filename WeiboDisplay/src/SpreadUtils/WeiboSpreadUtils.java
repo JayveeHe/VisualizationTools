@@ -304,8 +304,9 @@ public class WeiboSpreadUtils {
 
         String show_text = object_show.getString("text");
         //除掉html标记
-        show_text = show_text.replaceAll("<a.*?\">@", "@");
-        show_text = show_text.replaceAll("</a>", "");
+//        show_text = show_text.replaceAll("<a.*?\">@", "@");
+//        show_text = show_text.replaceAll("</a>", "");
+        show_text = show_text.replaceAll("<.*?>", "");
         String show_created_at = object_show.getString("created_at");
         //解析时间为标准格式
 
@@ -377,8 +378,9 @@ public class WeiboSpreadUtils {
                 String post_time = repost.getString("created_at");
                 String temp = repost.getString("text");
                 //除掉html标记
-                temp = temp.replaceAll("<a.*?\">@", "@");
-                temp = temp.replaceAll("</a>", "");
+//                temp = temp.replaceAll("<a.*?\">@", "@");
+//                temp = temp.replaceAll("</a>", "");
+                temp = temp.replaceAll("<.*?>", "");
                 String text = "";
                 ArrayList<String> repost_link = new ArrayList<String>();
                 int repost_count = repost.optInt("reposts_count");// 该节点的转发总数

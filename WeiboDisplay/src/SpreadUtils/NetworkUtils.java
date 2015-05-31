@@ -95,7 +95,7 @@ public class NetworkUtils {
 //        String cookie = FileUtils.File2str("./conf/cookie");
         String cookie = "_T_WM=52e123f869582779989409949cd420eb; SUB=_2A254XRVNDeTxGeNP71QV8S_EzTmIHXVbobsFrDV6PUJbrdBeLVrnkW2Dh0YqyW4_D8vQ2oTsuFI9QcOGAA..; SUHB=0D-V_faheNrwve; SSOLoginState=1431921948; M_WEIBOCN_PARAMS=uicode%3D20000174";
         conn.setRequestProperty("Cookie",cookie);
-        conn.setReadTimeout(5000);
+        conn.setReadTimeout(20000);
         try {
             conn.connect();
         } catch (SocketTimeoutException ste) {

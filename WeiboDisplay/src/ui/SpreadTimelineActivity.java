@@ -63,7 +63,7 @@ public class SpreadTimelineActivity extends Activity {
 		graphView.setViewPort(0, Xmax);
 		// layout.addView(graphView);
 		LinearLayout layout = (LinearLayout) findViewById(R.id.linearlayout_spreadtimeline);
-//		layout.addView(graphView, 1, new LayoutParams(480, 500));
+		// layout.addView(graphView, 1, new LayoutParams(480, 500));
 		layout.addView(graphView, 1, new LayoutParams(
 				(int) (NaviActivity.ViewWidth * 0.9f),
 				(int) (NaviActivity.ViewHeight * 0.5f)));
@@ -110,9 +110,13 @@ public class SpreadTimelineActivity extends Activity {
 				GraphViewSeriesStyle gvss = new GraphViewSeriesStyle();
 				int lastX = (int) Math.floor(Xposition / 5);
 				int nextX = lastX + 1;
-				final float clickY = curve[lastX]
-						+ ((Xposition - lastX * 5) / 5)
-						* (curve[nextX] - curve[lastX]);
+				final float clickY;
+				if (curve.length <= 1) {
+					clickY = curve[0];
+				} else {
+					clickY = curve[lastX] + ((Xposition - lastX * 5) / 5)
+							* (curve[nextX] - curve[lastX]);
+				}
 				// System.out.println("lastX="+lastX+"="+curve[lastX]+"nextX="+nextX+"="+curve[nextX]);
 				GraphViewData clickData = new GraphViewData(Xposition, clickY);
 				gvss.color = Color.parseColor("#ff0000");
